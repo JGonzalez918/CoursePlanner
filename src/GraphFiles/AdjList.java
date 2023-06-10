@@ -18,6 +18,15 @@ public class AdjList
 		}
 	}
 	
+	public Edge getNeighborList(int vertex) 
+	{
+		if(invalidVertex(vertex)) 
+		{
+			throw new IllegalArgumentException("Vertex passed into function is out of valid range");
+		}
+		return graph[vertex];
+	}
+	
 	/*
 	 * Add edge from vertex u to vertex v with weight "weight"
 	 * I am inserting the edges in sorted order of v in order to avoid 
@@ -44,6 +53,10 @@ public class AdjList
 		}
 	}
 	
+	/*
+	 * Remove some directed edge from vertex u to vertex v
+	 * Will throw an exception is the vertex is invalid or there was no edge there to begin with
+	 */
 	public void removeEdge(int u, int v) 
 	{
 		if(invalidVertex(u) || invalidVertex(v)) 
@@ -54,6 +67,14 @@ public class AdjList
 		while(currEdge.next != null && currEdge.next.vertex < v) 
 		{
 			currEdge = currEdge.next;
+		}
+		if(currEdge.next == null || currEdge.next.vertex != v) 
+		{
+			throw new IllegalArgumentException("Edge form vertex " + u + " (u) to " + v + " (v) does not exist");
+		}	
+		else 
+		{
+			currEdge.next = currEdge.next.next;
 		}
 	}
 	
@@ -67,5 +88,28 @@ public class AdjList
 			return true;
 		}
 		return false;
+	}
+	
+	public String toString() 
+	{
+		StringBuilder s = new StringBuilder();
+		for(int i = 0; i < graph.length; i++) 
+		{
+			s.append(i + ": ");
+			Edge currEdge = graph[i].next;
+			while(currEdge != null && currEdge.next != null) 
+			{
+				s.append(currEdge.toString());
+				s.append("->");
+				currEdge = currEdge.next;
+			}
+			if(currEdge != null) {
+				s.append(currEdge.toString());
+				s.append("->");
+			}
+			s.append("X");
+			s.append("\n");
+		}
+		return s.toString();
 	}
 }
