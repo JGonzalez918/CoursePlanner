@@ -44,6 +44,19 @@ public class AdjList
 		}
 	}
 	
+	public void removeEdge(int u, int v) 
+	{
+		if(invalidVertex(u) || invalidVertex(v)) 
+		{
+			throw new IllegalArgumentException("Vertex passed into function is out of valid range");
+		}
+		Edge currEdge = graph[u];
+		while(currEdge.next != null && currEdge.next.vertex < v) 
+		{
+			currEdge = currEdge.next;
+		}
+	}
+	
 	/*
 	 * Vertexes are labeled from 0 to (n - 1) where n is the number of nodes in the graph
 	 */
