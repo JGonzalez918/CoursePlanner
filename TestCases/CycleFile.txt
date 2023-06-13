@@ -1,0 +1,2 @@
+A, Vertex A, 10, B
+B, Vertex B, 10, A
