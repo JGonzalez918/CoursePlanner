@@ -39,7 +39,11 @@ public class Scheduler
 			ArrayList<String> prerequisitesForVertex = rawPrerequisites.get(i);
 			for(String s : prerequisitesForVertex) 
 			{
-				int prereqVertex = idToVertex.get(s);
+				Integer prereqVertex = idToVertex.get(s);
+				if(prereqVertex == null)
+				{
+					throw new RuntimeException();
+				}
 				classStructure.addEdge(i, prereqVertex, PREREQUISITE_TO_THIS_VERTEX);
 				classStructure.addEdge(prereqVertex, i, PREREQUISITE_FOR_ANOTHER_VERTEX);
 				prereqGraph.addEdge(i, prereqVertex, PREREQUISITE_TO_THIS_VERTEX);
@@ -59,7 +63,7 @@ public class Scheduler
 		{
 			if(visited[i] == UNVISITED && containsCycleDFS(i,visited,vertexesInCycle)) 
 			{
-				System.out.println("Cycle is " + vertexesInCycle);
+				System.out.println("Cycle is:" + vertexesInCycle);
 				throw new IllegalStructure();
 			}
 		}
