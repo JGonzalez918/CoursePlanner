@@ -63,12 +63,25 @@ public class Scheduler
 		{
 			if(visited[i] == UNVISITED && containsCycleDFS(i,visited,vertexesInCycle)) 
 			{
-				System.out.println("Cycle is:" + vertexesInCycle);
-				throw new IllegalStructure();
+				String cycleError = buildErrorMessage(vertexesInCycle);
+				System.err.println(cycleError);
+				System.exit(0);
 			}
 		}
 	}
 	
+	private String buildErrorMessage(ArrayList<Integer> vertexesInCycle)
+	{
+		StringBuilder s = new StringBuilder();
+		String course1 = courseList.get(0).courseName;
+		String course2 = courseList.get(1).courseName;
+		s.append("Error: There is a cycle in the provided course structure.\n");
+		s.append("The course " + course2 + " requires " + course1 + " to be taken before it can be taken."
+				+ "\nHowever, " + course1 + " also requires " + course2 + " to be taken before it at some point and thus this provided ordering makes taking the "
+				+ "two courses to be taken impossible.");
+		return s.toString();
+	}
+
 	private boolean containsCycleDFS(int vertex, int[] visited, ArrayList<Integer> vertexesInCycle) 
 	{
 		visited[vertex] = IN_STACK;
@@ -92,7 +105,6 @@ public class Scheduler
 				vertexesInCycle.add(vertex);
 				return true;
 			}
-		
 			currEdge = currEdge.next;
 		}
 		visited[vertex] = VISITED;
