@@ -72,29 +72,27 @@ public class Scheduler
 	private boolean containsCycleDFS(int vertex, int[] visited, ArrayList<Integer> vertexesInCycle) 
 	{
 		visited[vertex] = IN_STACK;
-		Edge currEdge = classStructure.getNeighborList(vertex).next;
+		Edge currEdge = prereqGraph.getNeighborList(vertex).next;
 		while(currEdge != null) 
 		{
-			if(currEdge.weight == PREREQUISITE_FOR_ANOTHER_VERTEX) 
+			if(visited[currEdge.vertex] == UNVISITED) 
 			{
-				if(visited[currEdge.vertex] == UNVISITED) 
+				if(containsCycleDFS(currEdge.vertex,visited,vertexesInCycle)) 
 				{
-					if(containsCycleDFS(currEdge.vertex,visited,vertexesInCycle)) 
+					if(vertexesInCycle.get(0) != vertexesInCycle.get(vertexesInCycle.size() - 1))
 					{
-						if(vertexesInCycle.get(0) != vertexesInCycle.get(vertexesInCycle.size() - 1))
-						{
-							vertexesInCycle.add(vertex);
-						}
-						return true;
+						vertexesInCycle.add(vertex);
 					}
-				}
-				else if(visited[currEdge.vertex] == IN_STACK) 
-				{
-					vertexesInCycle.add(currEdge.vertex);
-					vertexesInCycle.add(vertex);
 					return true;
 				}
 			}
+			else if(visited[currEdge.vertex] == IN_STACK) 
+			{
+				vertexesInCycle.add(currEdge.vertex);
+				vertexesInCycle.add(vertex);
+				return true;
+			}
+		
 			currEdge = currEdge.next;
 		}
 		visited[vertex] = VISITED;
