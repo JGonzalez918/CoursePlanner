@@ -9,17 +9,13 @@ import GraphFiles.Edge;
 
 public class Scheduler
 {
-	ArrayList<Course> courseList;
+	private ArrayList<Course> courseList;
 	
-	AdjList classStructure;
+	private AdjList classStructure;
 	
-	AdjList prereqGraph;
+	private AdjList prereqGraph;
 	
-	ArrayList<Integer> readyCourses;
-	
-	ArrayList<Integer> readySublist;
-	
-	int currentSemester;
+	private int currentSemester;
 	
 	private static final int PREREQUISITE_TO_THIS_VERTEX = 1;
 	
@@ -36,6 +32,69 @@ public class Scheduler
 		checkIfCycle();
 		markInitialClasses();
 	}
+	public String getAvailableClasses() 
+	{
+		StringBuilder s = new StringBuilder();
+		int listIndex = 1;
+		s.append("Available Classes for Semester: " + currentSemester + "\n");
+		for(int i = 0; i < courseList.size(); i++) 
+		{
+			if(canBeTaken(i)) 
+			{
+				s.append(listIndex + ")" + courseList.get(i).toString() + "\n");
+				listIndex++;
+			}
+		}
+		return s.toString();
+	}
+	
+	//Index is in the range of 1 - n where n is the number of courses in the list
+	public int convertIndexToVertex(int index) 
+	{
+		if(index <= 0 || index >= courseList.size()) {
+			return -1;
+		}
+		int i = 0;
+		
+		while(i < courseList.size() && index != 0) 
+		{
+			if(canBeTaken(i)) 
+			{
+				index--;
+			}
+			if(index != 0) 
+			{
+				i++;
+			}
+		}
+		return i == courseList.size() ? -1 : i;
+	}
+	/**
+	 * The course scheduler is essentially a list of lists of courses 
+	 * There is a list for each semester that the student is in school for.
+	 * The list contains the courses that the student chose to take that semester
+	 * The purpose of this function is mark the semester the class was taken 
+	 * and then remove the prerequisite of this class from other courses
+	 * Assume that when this funciton is called it is a valid vertex that cna be taken
+	 * @param vertex
+	 */
+	public void addClassToSemester(int vertex) 
+	{
+		Course takenCourse = courseList.get(vertex);
+		takenCourse.semesterClassCompleted = currentSemester;
+		Edge currEdge = classStructure.getNeighborList(vertex).next;
+		while(currEdge != null) 
+		{
+			if(currEdge.weight == PREREQUISITE_FOR_ANOTHER_VERTEX) 
+			{
+				prereqGraph.removeEdge(currEdge.vertex, vertex);
+				if(prereqGraph.getNeighborList(currEdge.vertex).next == null) 
+				{
+					courseList.get(currEdge.vertex).semesterPrereqCompleted = currentSemester;
+				}
+			}
+		}
+	}
 	
 	
 	/*
@@ -43,7 +102,7 @@ public class Scheduler
 	 * It checks if the class prerequisites have been completed, the class has not been taken,
 	 * and that the prerequisite have been completed before the current semster
 	 */
-	public boolean canBeTaken(int vertex) 
+	private boolean canBeTaken(int vertex) 
 	{
 		Course course = courseList.get(vertex);
 		return currentSemester > course.semesterPrereqCompleted &&
@@ -101,7 +160,6 @@ public class Scheduler
 	}
 	
 
-
 	private boolean containsCycleDFS(int vertex, int[] visited, ArrayList<Integer> vertexesInCycle) 
 	{
 		visited[vertex] = IN_STACK;
@@ -149,4 +207,27 @@ public class Scheduler
 		}
 		return s.toString();
 	}
+
+	public ArrayList<Course> getCourseList()
+	{
+		return courseList;
+	}
+
+	public int getCurrentSemester()
+	{
+		return currentSemester;
+	}
+	
+	//TODO: consider changing data type of semester to double to use the value Double.POSITIVE_INFINITY
+	//instead of Integer.MAX_VALUE
+	public boolean setCurrentSemester(int currentSemester) 
+	{
+		if(currentSemester < 0 || currentSemester == Course.PREREQ_NOT_COMPLETED) 
+		{
+			return false;
+		}
+		this.currentSemester = currentSemester;
+		return true;
+	}
+
 }
