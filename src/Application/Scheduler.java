@@ -71,24 +71,7 @@ public class Scheduler
 		}
 	}
 	
-	private String buildErrorMessage(ArrayList<Integer> vertexesInCycle)
-	{
-		StringBuilder s = new StringBuilder();
-		String course1 = courseList.get(0).courseName;
-		String course2 = courseList.get(1).courseName;
-		s.append("Error: There is a cycle in the provided course structure.\n");
-		s.append("The course " + course2 + " requires " + course1 + " to be taken before it can be taken."
-				+ "\nHowever, " + course1 + " also requires " + course2 + " to be taken before it at some point. "
-				+ "\nThus this provided ordering makes taking the two courses to be taken impossible.");
-		s.append("\nHere is the cycle:\n");
-		for(int i = 1; i < vertexesInCycle.size(); i++) 
-		{
-			course2 = courseList.get(vertexesInCycle.get(i)).courseName;
-			s.append(course2 + " requires " + course1 + "\n");
-			course1 = course2;
-		}
-		return s.toString();
-	}
+
 
 	private boolean containsCycleDFS(int vertex, int[] visited, ArrayList<Integer> vertexesInCycle) 
 	{
@@ -117,5 +100,24 @@ public class Scheduler
 		}
 		visited[vertex] = VISITED;
 		return false;
+	}	
+	
+	private String buildErrorMessage(ArrayList<Integer> vertexesInCycle)
+	{
+		StringBuilder s = new StringBuilder();
+		String course1 = courseList.get(0).courseName;
+		String course2 = courseList.get(1).courseName;
+		s.append("Error: There is a cycle in the provided course structure.\n");
+		s.append("The course " + course2 + " requires " + course1 + " to be taken before it can be taken."
+				+ "\nHowever, " + course1 + " also requires " + course2 + " to be taken before it at some point. "
+				+ "\nThus this provided ordering makes taking the two courses to be taken impossible.");
+		s.append("\nHere is the cycle:\n");
+		for(int i = 1; i < vertexesInCycle.size(); i++) 
+		{
+			course2 = courseList.get(vertexesInCycle.get(i)).courseName;
+			s.append(course2 + " requires " + course1 + "\n");
+			course1 = course2;
+		}
+		return s.toString();
 	}
 }
