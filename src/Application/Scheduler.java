@@ -19,6 +19,8 @@ public class Scheduler
 	
 	ArrayList<Integer> readySublist;
 	
+	int currentSemester;
+	
 	private static final int PREREQUISITE_TO_THIS_VERTEX = 1;
 	
 	private static final int  PREREQUISITE_FOR_ANOTHER_VERTEX= 2;
@@ -28,8 +30,21 @@ public class Scheduler
 		this.courseList = parsedFile.getCourseList();
 		classStructure = new AdjList(courseList.size());
 		prereqGraph = new AdjList(courseList.size());
+		currentSemester = 1;
 		buildGraph(parsedFile.getIdToVertex(), parsedFile.getRawPrerequisites());
 		checkIfCycle();
+		markInitialClasses();
+	}
+	
+	private void markInitialClasses() 
+	{
+		for(int i = 0; i < prereqGraph.nodeCount; i++) 
+		{
+			if(prereqGraph.getNeighborList(i).next == null) 
+			{
+				courseList.get(i).semesterPrereqCompleted = 0;
+			}
+		}
 	}
 	
 	private void buildGraph(HashMap<String, Integer> idToVertex, ArrayList<ArrayList<String>> rawPrerequisites) 

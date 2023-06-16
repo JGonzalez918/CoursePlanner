@@ -74,7 +74,7 @@ public class Parser
 		courseList.add(new Course(courseId, courseName, unitWorth));
 		if(idToVertex.get(courseId) != null) 
 		{
-			System.err.println("The course id " + courseId + "has been reused. Please redefine the course id.");
+			System.err.println("The course id " + courseId + " has been reused. Please redefine the course id.");
 			System.exit(0);
 		}
 		idToVertex.put(courseId, courseList.size() - 1);
