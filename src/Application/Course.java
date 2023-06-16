@@ -2,6 +2,10 @@ package Application;
 
 public class Course
 {
+	public static final int PREREQ_NOT_COMPLETED = Integer.MAX_VALUE;
+
+	public static final int COURSE_NOT_TAKEN = -1;
+
 	public String classId;
 	
 	public String courseName;
@@ -17,8 +21,8 @@ public class Course
 		this.classId = classId;
 		this.courseName = courseName;
 		this.unitWorth = unitWorth;
-		this.semesterPrereqCompleted = -1;
-		this.semesterClassCompleted = -1;
+		this.semesterPrereqCompleted = PREREQ_NOT_COMPLETED;
+		this.semesterClassCompleted = COURSE_NOT_TAKEN;
 	}
 	
 	public String toString() 

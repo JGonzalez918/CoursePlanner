@@ -31,9 +31,23 @@ public class Scheduler
 		classStructure = new AdjList(courseList.size());
 		prereqGraph = new AdjList(courseList.size());
 		currentSemester = 1;
+		
 		buildGraph(parsedFile.getIdToVertex(), parsedFile.getRawPrerequisites());
 		checkIfCycle();
 		markInitialClasses();
+	}
+	
+	
+	/*
+	 * Return whether or not a class can be taken during a certain semester.
+	 * It checks if the class prerequisites have been completed, the class has not been taken,
+	 * and that the prerequisite have been completed before the current semster
+	 */
+	public boolean canBeTaken(int vertex) 
+	{
+		Course course = courseList.get(vertex);
+		return currentSemester > course.semesterPrereqCompleted &&
+				course.semesterClassCompleted == Course.COURSE_NOT_TAKEN;
 	}
 	
 	private void markInitialClasses() 
