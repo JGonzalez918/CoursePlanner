@@ -72,7 +72,12 @@ public class Parser
 		}
 		
 		courseList.add(new Course(courseId, courseName, unitWorth));
-		idToVertex.put(courseList.get(courseList.size() - 1).classId, courseList.size() - 1);
+		if(idToVertex.get(courseId) != null) 
+		{
+			System.err.println("The course id " + courseId + "has been reused. Please redefine the course id.");
+			System.exit(0);
+		}
+		idToVertex.put(courseId, courseList.size() - 1);
 		rawPrerequisites.add(prereqList);
 	}
 	
