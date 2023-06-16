@@ -42,7 +42,8 @@ public class Scheduler
 				Integer prereqVertex = idToVertex.get(s);
 				if(prereqVertex == null)
 				{
-					throw new RuntimeException();
+					System.err.println("The given prerequisite " + s +" for class " + courseList.get(i).courseName + " was not declared in the input file");
+					System.exit(0);
 				}
 				classStructure.addEdge(i, prereqVertex, PREREQUISITE_TO_THIS_VERTEX);
 				classStructure.addEdge(prereqVertex, i, PREREQUISITE_FOR_ANOTHER_VERTEX);
