@@ -22,6 +22,10 @@ public class Parser
 	
 	private ArrayList<ArrayList<String>> rawPrerequisites;
 	
+	private String startTerm;
+	
+	private int startYear;
+	
 	private static final String COMMA_SEPERATOR = ",";
 	
 	private static final int ID_INDEX = 0;
@@ -42,12 +46,14 @@ public class Parser
 		
 		rawPrerequisites = new ArrayList<>();
 		
-		parseCourses();
+		parseFile();
 	}
 	
 	
-	public void parseCourses() 
+	public void parseFile() 
 	{
+		startTerm = removeIllegalChars(inputFile.next());
+		startYear = Integer.parseInt(removeIllegalChars(inputFile.nextLine()));
 		while(inputFile.hasNextLine())
 		{
 			String currLine = inputFile.nextLine();
@@ -61,6 +67,14 @@ public class Parser
 	private void parseCourse(String inputLine) 
 	{	
 		String[] courseInfo = inputLine.split(COMMA_SEPERATOR);
+		if(courseInfo.length < 3) 
+		{
+			System.err.println(inputLine + 
+					"\nThe given information on the above line does not meet the minimum length for a course"
+				  + "\nAn input line must consist of the folloing information <Course_ID>,<Course_Name>,<Unit_Worth>[,<Course_ID_List>]"
+				  + "\nWhere the <Course_ID_List> can be empty or a comma seperated list of course ids");
+			System.exit(0);
+		}
 		String courseId = removeIllegalChars(courseInfo[ID_INDEX]);
 		String courseName = courseInfo[NAME_INDEX].strip();
 		int unitWorth = (int)Double.parseDouble(courseInfo[UNITS_INDEX].strip());
@@ -115,6 +129,19 @@ public class Parser
 	{
 		return rawPrerequisites;
 	}
+
+
+	public String getStartTerm()
+	{
+		return startTerm;
+	}
+
+
+	public int getStartYear()
+	{
+		return startYear;
+	}
+	
 	
 	 
 	
