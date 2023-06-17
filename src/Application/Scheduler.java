@@ -56,8 +56,13 @@ public class Scheduler
 		s.append("Planned schedule is listed below:\n");
 		while(i < sortedCourseList.size()) 
 		{
-			s.append(sortedCourseList.get(i).toString() + "\n");
-			i++;
+			int semesterHeading = sortedCourseList.get(i).semesterClassCompleted;
+			s.append("Semester #" + semesterHeading + "\n");
+			while(i < sortedCourseList.size() && sortedCourseList.get(i).semesterClassCompleted == semesterHeading) 
+			{
+				s.append(sortedCourseList.get(i).toString() + "\n");
+				i++;
+			}
 		}
 		return s.toString();
 	}
