@@ -18,6 +18,10 @@ public class Scheduler
 	
 	private AdjList prereqGraph;
 	
+	private static final String[] TERM_NAMES = {"Fall","Spring"};
+	
+	private int startYear;
+	
 	private int currentSemester;
 	
 	private static final int PREREQUISITE_TO_THIS_VERTEX = 1;
@@ -27,6 +31,8 @@ public class Scheduler
 	public Scheduler(Parser parsedFile) 
 	{
 		this.courseList = parsedFile.getCourseList();
+		this.startYear = parsedFile.getStartYear();
+		
 		sortedCourseList = new ArrayList<>(parsedFile.getCourseList());
 		classStructure = new AdjList(courseList.size());
 		prereqGraph = new AdjList(courseList.size());
@@ -37,73 +43,6 @@ public class Scheduler
 		markInitialClasses();
 	}
 	
-	public String getPlannedSchedule() 
-	{
-		Collections.sort(sortedCourseList, new Comparator<Course>()
-		{
-			public int compare(Course o1, Course o2)
-			{
-				return o1.semesterClassCompleted - o2.semesterClassCompleted;
-			}
-		});
-		
-		int i = 0; 
-		while(i < sortedCourseList.size() && sortedCourseList.get(i).semesterClassCompleted == -1) 
-		{
-			i++;
-		}
-		StringBuilder s = new StringBuilder();
-		s.append("Planned schedule is listed below:\n");
-		while(i < sortedCourseList.size()) 
-		{
-			int semesterHeading = sortedCourseList.get(i).semesterClassCompleted;
-			s.append("Semester #" + semesterHeading + "\n");
-			while(i < sortedCourseList.size() && sortedCourseList.get(i).semesterClassCompleted == semesterHeading) 
-			{
-				s.append(sortedCourseList.get(i).toString() + "\n");
-				i++;
-			}
-		}
-		return s.toString();
-	}
-	
-	public String getAvailableClasses() 
-	{
-		StringBuilder s = new StringBuilder();
-		int listIndex = 1;
-		s.append("Available Classes for Semester: " + currentSemester + "\n");
-		for(int i = 0; i < courseList.size(); i++) 
-		{
-			if(canBeTaken(i)) 
-			{
-				s.append(listIndex + ")" + courseList.get(i).toString() + "\n");
-				listIndex++;
-			}
-		}
-		return s.toString();
-	}
-	
-	//Index is in the range of 1 - n where n is the number of courses in the list
-	public int convertIndexToVertex(int index) 
-	{
-		if(index <= 0 || index >= courseList.size()) {
-			return -1;
-		}
-		int i = 0;
-		
-		while(i < courseList.size() && index != 0) 
-		{
-			if(canBeTaken(i)) 
-			{
-				index--;
-			}
-			if(index != 0) 
-			{
-				i++;
-			}
-		}
-		return i == courseList.size() ? -1 : i;
-	}
 	/**
 	 * The course scheduler is essentially a list of lists of courses 
 	 * There is a list for each semester that the student is in school for.
@@ -131,6 +70,7 @@ public class Scheduler
 			currEdge = currEdge.next;
 		}
 	}
+	
 	
 	
 	/*
@@ -264,6 +204,72 @@ public class Scheduler
 		}
 		this.currentSemester = currentSemester;
 		return true;
+	}
+	public String getAvailableClasses() 
+	{
+		StringBuilder s = new StringBuilder();
+		int listIndex = 1;
+		s.append("Available Classes for Semester: " + currentSemester + "\n");
+		for(int i = 0; i < courseList.size(); i++) 
+		{
+			if(canBeTaken(i)) 
+			{
+				s.append(listIndex + ")" + courseList.get(i).toString() + "\n");
+				listIndex++;
+			}
+		}
+		return s.toString();
+	}
+	
+	//Index is in the range of 1 - n where n is the number of courses in the list
+	public int convertIndexToVertex(int index) 
+	{
+		if(index <= 0 || index >= courseList.size()) {
+			return -1;
+		}
+		int i = 0;
+		
+		while(i < courseList.size() && index != 0) 
+		{
+			if(canBeTaken(i)) 
+			{
+				index--;
+			}
+			if(index != 0) 
+			{
+				i++;
+			}
+		}
+		return i == courseList.size() ? -1 : i;
+	}
+	public String getPlannedSchedule() 
+	{
+		Collections.sort(sortedCourseList, new Comparator<Course>()
+		{
+			public int compare(Course o1, Course o2)
+			{
+				return o1.semesterClassCompleted - o2.semesterClassCompleted;
+			}
+		});
+		
+		int i = 0; 
+		while(i < sortedCourseList.size() && sortedCourseList.get(i).semesterClassCompleted == -1) 
+		{
+			i++;
+		}
+		StringBuilder s = new StringBuilder();
+		s.append("Planned schedule is listed below:\n");
+		while(i < sortedCourseList.size()) 
+		{
+			int semesterHeading = sortedCourseList.get(i).semesterClassCompleted;
+			s.append("Semester #" + semesterHeading + "\n");
+			while(i < sortedCourseList.size() && sortedCourseList.get(i).semesterClassCompleted == semesterHeading) 
+			{
+				s.append(sortedCourseList.get(i).toString() + "\n");
+				i++;
+			}
+		}
+		return s.toString();
 	}
 
 }
