@@ -1,15 +1,18 @@
 package Application;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
-import Exceptions.IllegalStructure;
 import GraphFiles.AdjList;
 import GraphFiles.Edge;
 
 public class Scheduler
 {
 	private ArrayList<Course> courseList;
+	
+	private ArrayList<Course> sortedCourseList;
 	
 	private AdjList classStructure;
 	
@@ -24,6 +27,7 @@ public class Scheduler
 	public Scheduler(Parser parsedFile) 
 	{
 		this.courseList = parsedFile.getCourseList();
+		sortedCourseList = new ArrayList<>(parsedFile.getCourseList());
 		classStructure = new AdjList(courseList.size());
 		prereqGraph = new AdjList(courseList.size());
 		currentSemester = 1;
@@ -32,6 +36,32 @@ public class Scheduler
 		checkIfCycle();
 		markInitialClasses();
 	}
+	
+	public String getPlannedSchedule() 
+	{
+		Collections.sort(sortedCourseList, new Comparator<Course>()
+		{
+			public int compare(Course o1, Course o2)
+			{
+				return o1.semesterClassCompleted - o2.semesterClassCompleted;
+			}
+		});
+		
+		int i = 0; 
+		while(i < sortedCourseList.size() && sortedCourseList.get(i).semesterClassCompleted == -1) 
+		{
+			i++;
+		}
+		StringBuilder s = new StringBuilder();
+		s.append("Planned schedule is listed below:\n");
+		while(i < sortedCourseList.size()) 
+		{
+			s.append(sortedCourseList.get(i).toString() + "\n");
+			i++;
+		}
+		return s.toString();
+	}
+	
 	public String getAvailableClasses() 
 	{
 		StringBuilder s = new StringBuilder();
@@ -93,6 +123,7 @@ public class Scheduler
 					courseList.get(currEdge.vertex).semesterPrereqCompleted = currentSemester;
 				}
 			}
+			currEdge = currEdge.next;
 		}
 	}
 	
