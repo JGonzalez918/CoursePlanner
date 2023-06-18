@@ -18,9 +18,11 @@ public class Scheduler
 	
 	private AdjList prereqGraph;
 	
-	private static final String[] TERM_NAMES = {"Fall","Spring"};
+	private static final String[] TERM_NAMES = new String[2];
 	
 	private int startYear;
+	
+	private String startTerm;
 	
 	private int currentSemester;
 	
@@ -32,7 +34,15 @@ public class Scheduler
 	{
 		this.courseList = parsedFile.getCourseList();
 		this.startYear = parsedFile.getStartYear();
-		
+		this.startTerm = parsedFile.getStartTerm();
+		if(startTerm.equals("FALL")) {
+			TERM_NAMES[0] = "Spring";
+			TERM_NAMES[1] = "Fall";
+
+		}else {
+			TERM_NAMES[0] = "Fall";
+			TERM_NAMES[1] = "Spring";
+		}
 		sortedCourseList = new ArrayList<>(parsedFile.getCourseList());
 		classStructure = new AdjList(courseList.size());
 		prereqGraph = new AdjList(courseList.size());
@@ -261,9 +271,12 @@ public class Scheduler
 		s.append("Planned schedule is listed below:\n");
 		while(i < sortedCourseList.size()) 
 		{
-			int semesterHeading = sortedCourseList.get(i).semesterClassCompleted;
-			s.append("Semester #" + semesterHeading + "\n");
-			while(i < sortedCourseList.size() && sortedCourseList.get(i).semesterClassCompleted == semesterHeading) 
+			String term = TERM_NAMES[(sortedCourseList.get(i).semesterClassCompleted % 2)];
+			s.append(term + " ");
+			int year = Math.floorDiv(sortedCourseList.get(i).semesterClassCompleted - 1 ,2) + startYear;
+			s.append(year + "\n");
+			int semesterBlock = sortedCourseList.get(i).semesterClassCompleted;
+			while(i < sortedCourseList.size() && sortedCourseList.get(i).semesterClassCompleted == semesterBlock) 
 			{
 				s.append(sortedCourseList.get(i).toString() + "\n");
 				i++;
