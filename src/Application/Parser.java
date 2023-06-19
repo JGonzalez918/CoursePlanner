@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import Exceptions.DuplicateCourse;
+import Exceptions.MissingInformation;
+
 /*
  * The rules for the input are as follows:
  * Each course input will be included in one line
@@ -69,11 +72,10 @@ public class Parser
 		String[] courseInfo = inputLine.split(COMMA_SEPERATOR);
 		if(courseInfo.length < 3) 
 		{
-			System.err.println(inputLine + 
+			throw new MissingInformation(inputLine + 
 					"\nThe given information on the above line does not meet the minimum length for a course"
 				  + "\nAn input line must consist of the folloing information <Course_ID>,<Course_Name>,<Unit_Worth>[,<Course_ID_List>]"
 				  + "\nWhere the <Course_ID_List> can be empty or a comma seperated list of course ids");
-			System.exit(0);
 		}
 		String courseId = removeIllegalChars(courseInfo[ID_INDEX]);
 		String courseName = courseInfo[NAME_INDEX].strip();
@@ -86,12 +88,10 @@ public class Parser
 		}
 		
 		courseList.add(new Course(courseId, courseName, unitWorth));
-		if(idToVertex.get(courseId) != null) 
+		if(idToVertex.put(courseId, courseList.size() - 1) != null) 
 		{
-			System.err.println("The course id " + courseId + " has been reused. Please redefine the course id.");
-			System.exit(0);
+			throw new DuplicateCourse("The course id " + courseId + " has been reused. Please redefine the course id.");
 		}
-		idToVertex.put(courseId, courseList.size() - 1);
 		rawPrerequisites.add(prereqList);
 	}
 	

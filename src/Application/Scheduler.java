@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
+import Exceptions.ContainsCycle;
+import Exceptions.UndeclaredCourse;
 import GraphFiles.AdjList;
 import GraphFiles.Edge;
 
@@ -116,8 +118,7 @@ public class Scheduler
 				Integer prereqVertex = idToVertex.get(s);
 				if(prereqVertex == null)
 				{
-					System.err.println("The given prerequisite " + s +" for class " + courseList.get(i).courseName + " was not declared in the input file");
-					System.exit(0);
+					throw new UndeclaredCourse("The given prerequisite " + s +" for class " + courseList.get(i).courseName + " was not declared in the input file");
 				}
 				classStructure.addEdge(i, prereqVertex, PREREQUISITE_TO_THIS_VERTEX);
 				classStructure.addEdge(prereqVertex, i, PREREQUISITE_FOR_ANOTHER_VERTEX);
@@ -138,9 +139,7 @@ public class Scheduler
 		{
 			if(visited[i] == UNVISITED && containsCycleDFS(i,visited,vertexesInCycle)) 
 			{
-				String cycleError = buildErrorMessage(vertexesInCycle);
-				System.err.println(cycleError);
-				System.exit(0);
+				throw new ContainsCycle(buildErrorMessage(vertexesInCycle));
 			}
 		}
 	}
