@@ -36,9 +36,9 @@ public class Parser
 	
 	private static final int PREREQ_LIST_INDEX = 3;
 	
-	public Parser(String filePath) throws FileNotFoundException
+	public Parser(Scanner openedFile)
 	{
-		inputFile = new Scanner(new File(filePath));
+		inputFile = openedFile;
 		
 		courseList = new ArrayList<>();
 		
