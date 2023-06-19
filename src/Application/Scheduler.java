@@ -219,7 +219,11 @@ public class Scheduler
 	{
 		StringBuilder s = new StringBuilder();
 		int listIndex = 1;
-		s.append("Available Classes for Semester: " + currentSemester + "\n");
+		s.append("Available Classes for ");
+		String term = TERM_NAMES[(currentSemester % 2)];
+		s.append(term + " ");
+		int year = Math.floorDiv(currentSemester - 1 ,2) + startYear;
+		s.append(year + "\n");
 		for(int i = 0; i < courseList.size(); i++) 
 		{
 			if(canBeTaken(i)) 
@@ -273,7 +277,7 @@ public class Scheduler
 		{
 			String term = TERM_NAMES[(sortedCourseList.get(i).semesterClassCompleted % 2)];
 			s.append(term + " ");
-			int year = Math.floorDiv(sortedCourseList.get(i).semesterClassCompleted - 1 ,2) + startYear;
+			int year = Math.floorDiv(sortedCourseList.get(i).semesterClassCompleted ,2) + startYear;
 			s.append(year + "\n");
 			int semesterBlock = sortedCourseList.get(i).semesterClassCompleted;
 			while(i < sortedCourseList.size() && sortedCourseList.get(i).semesterClassCompleted == semesterBlock) 
