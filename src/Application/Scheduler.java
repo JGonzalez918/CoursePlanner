@@ -20,6 +20,8 @@ public class Scheduler
 	
 	private AdjList prereqGraph;
 	
+	private int coursesProcessed;
+	
 	private static final String[] TERM_NAMES = new String[2];
 	
 	private int startYear;
@@ -49,6 +51,7 @@ public class Scheduler
 		classStructure = new AdjList(courseList.size());
 		prereqGraph = new AdjList(courseList.size());
 		currentSemester = 1;
+		coursesProcessed = 0;
 		
 		buildGraph(parsedFile.getIdToVertex(), parsedFile.getRawPrerequisites());
 		checkIfCycle();
@@ -81,6 +84,7 @@ public class Scheduler
 			}
 			currEdge = currEdge.next;
 		}
+		coursesProcessed++;
 	}
 	
 	
@@ -286,6 +290,11 @@ public class Scheduler
 			}
 		}
 		return s.toString();
+	}
+	
+	public boolean donePlanning() 
+	{
+		return coursesProcessed == courseList.size();
 	}
 
 }
