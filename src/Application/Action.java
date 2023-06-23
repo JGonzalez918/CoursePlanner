@@ -13,7 +13,12 @@ package Application;
  */
 public abstract class Action
 {
-	String actionDescription;
+	String description;
+	
+	public Action(String description) 
+	{
+		this.description = description;
+	}
 	
 	public abstract void doAction();
 }

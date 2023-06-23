@@ -18,7 +18,7 @@ public class Main
 	
 	static ArrayList<Action> userActions = new ArrayList<>();
 
-	public static void main(String[] args) throws FileNotFoundException
+	public static void main(String[] args) throws FileNotFoundException, NoSuchFieldException, SecurityException
 	{
 		addUserActions();
 		getInputFile();
@@ -63,27 +63,25 @@ public class Main
 		}
 	}
 	
-	public static void promptUserForAction() 
+	public static void promptUserForAction() throws NoSuchFieldException, SecurityException 
 	{
 		for(int i = 0; i < userActions.size(); i++) 
 		{
-			System.out.println(i + ") " + userActions.get(i).actionDescription);
+			System.out.println((i+1) + ") " + userActions.get(i).description);
 		}
-		System.out.println("Enter the number corresponding to the action you want to take:");
+		System.out.print("Enter the number corresponding to the action you want to take:");
 		int actionIndex = -1;
 		do 
 		{
 			actionIndex = getNumber();
-		}while(actionIndex < 1 || actionIndex >= userActions.size());
+		}while(actionIndex < 1 || actionIndex > userActions.size());
 		userActions.get(actionIndex - 1).doAction();
 	}
 	
 	public static void addUserActions() 
 	{
-		userActions.add(new Action()
+		userActions.add(new Action("Print the currently planned course schedule")
 		{
-			
-			String actionDescription  = "Show schedule that has been planned so far";
 			public void doAction()
 			{
 				System.out.println(scheduler.getPlannedSchedule());
