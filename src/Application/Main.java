@@ -69,6 +69,7 @@ public class Main
 		{
 			System.out.println((i+1) + ") " + userActions.get(i).description);
 		}
+		System.out.println("Current Semester: " + scheduler.getCurrentSemester());
 		System.out.print("Enter the number corresponding to the action you want to take:");
 		int actionIndex = -1;
 		do 
@@ -85,6 +86,24 @@ public class Main
 			public void doAction()
 			{
 				System.out.println(scheduler.getPlannedSchedule());
+			}
+		});
+		
+		userActions.add(new Action("Add a course to the current semester") 
+		{
+			@Override
+			public void doAction()
+			{
+				
+			}
+		});
+		
+		userActions.add(new Action("Change semester") 
+		{
+			@Override
+			public void doAction()
+			{
+				
 			}
 		});
 	}
