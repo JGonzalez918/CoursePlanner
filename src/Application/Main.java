@@ -74,7 +74,7 @@ public class Main
 		int actionIndex = -1;
 		do 
 		{
-			actionIndex = getNumber();
+			actionIndex = getNumber(1,userActions.size());
 		}while(actionIndex < 1 || actionIndex > userActions.size());
 		userActions.get(actionIndex - 1).doAction();
 	}
@@ -108,7 +108,7 @@ public class Main
 		});
 	}
 	
-	public static int getNumber() 
+	public static int getNumber(int min, int max) 
 	{
 		int number = 0;
 		boolean numberPicked = false;
@@ -117,7 +117,16 @@ public class Main
 			try
 			{
 				number = kb.nextInt();
-				numberPicked = true;
+				if(number >= min || number <= max) 
+				{
+					numberPicked = true;
+				}
+				else 
+				{
+					System.out.println("The number entered is out of the valid range of " + min + " minimum "
+							+ "and " + max + " maximum");
+					System.out.print("Please enter again: ");
+				}
 			} 
 			catch (InputMismatchException e)
 			{
