@@ -94,7 +94,18 @@ public class Main
 			@Override
 			public void doAction()
 			{
-				
+				System.out.println(scheduler.getAvailableClasses());
+				System.out.println("Enter the list index corresponding to the class you want to add to this semester");
+				int vertex = -1;
+				do 
+				{
+					vertex = scheduler.convertIndexToVertex(getNumber(Integer.MIN_VALUE, Integer.MAX_VALUE));
+					if(vertex == -1) 
+					{
+						System.out.print("Invalid list index entered please enter again: ");
+					}
+				}while(vertex == -1);
+				scheduler.addClassToSemester(vertex);
 			}
 		});
 		
@@ -103,6 +114,8 @@ public class Main
 			@Override
 			public void doAction()
 			{
+				System.out.print("Enter the semester to change into (current semester is: " + scheduler.getCurrentSemester() + "): ");
+				scheduler.setCurrentSemester(getNumber(1, Integer.MAX_VALUE));
 				
 			}
 		});
