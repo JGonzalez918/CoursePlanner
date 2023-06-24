@@ -63,7 +63,7 @@ public class Main
 		}
 	}
 	
-	public static void promptUserForAction() throws NoSuchFieldException, SecurityException 
+	public static void promptUserForAction()
 	{
 		for(int i = 0; i < userActions.size(); i++) 
 		{
@@ -89,13 +89,15 @@ public class Main
 			}
 		});
 		
+		//TODO: Have add course action take a list of numbers rather than only one
+		//TODO: refactor get available classes to return a list of vertexes 
 		userActions.add(new Action("Add a course to the current semester") 
 		{
 			@Override
 			public void doAction()
 			{
 				System.out.println(scheduler.getAvailableClasses());
-				System.out.println("Enter the list index corresponding to the class you want to add to this semester");
+				System.out.print("Enter the list index corresponding to the class you want to add to this semester: ");
 				int vertex = -1;
 				do 
 				{
