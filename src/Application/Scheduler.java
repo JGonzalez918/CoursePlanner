@@ -259,6 +259,13 @@ public class Scheduler
 		}
 		return i == courseList.size() ? -1 : i;
 	}
+	
+	public String convertSemesterToTerm(int semester) 
+	{
+		return TERM_NAMES[semester % 2] + " " + 
+				Math.floorDiv(semester ,2) + startYear;
+	}
+	
 	public String getPlannedSchedule() 
 	{
 		Collections.sort(sortedCourseList, new Comparator<Course>()
@@ -278,11 +285,8 @@ public class Scheduler
 		s.append("Planned schedule is listed below:\n");
 		while(i < sortedCourseList.size()) 
 		{
-			String term = TERM_NAMES[(sortedCourseList.get(i).semesterClassCompleted % 2)];
-			s.append(term + " ");
-			int year = Math.floorDiv(sortedCourseList.get(i).semesterClassCompleted ,2) + startYear;
-			s.append(year + "\n");
 			int semesterBlock = sortedCourseList.get(i).semesterClassCompleted;
+			s.append(semesterBlock);
 			while(i < sortedCourseList.size() && sortedCourseList.get(i).semesterClassCompleted == semesterBlock) 
 			{
 				s.append(sortedCourseList.get(i).toString() + "\n");
