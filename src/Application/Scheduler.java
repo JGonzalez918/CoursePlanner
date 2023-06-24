@@ -263,7 +263,7 @@ public class Scheduler
 	public String convertSemesterToTerm(int semester) 
 	{
 		return TERM_NAMES[semester % 2] + " " + 
-				Math.floorDiv(semester ,2) + startYear;
+				(semester/2 + startYear);
 	}
 	
 	public String getPlannedSchedule() 
