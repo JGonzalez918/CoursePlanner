@@ -91,24 +91,19 @@ public class Main
 		});
 		
 		//TODO: Have add course action take a list of numbers rather than only one
-		//TODO: refactor get available classes to return a list of vertexes 
 		userActions.add(new Action("Add a course to the current semester") 
 		{
 			@Override
 			public void doAction()
 			{
-				System.out.println(scheduler.getAvailableClasses());
+				ArrayList<Integer> availableCourses = scheduler.getAvailableCourses();
+				System.out.println(scheduler.convertCourseListToStr("\nCourses available for " + scheduler.convertSemesterToTerm(scheduler.getCurrentSemester()) + " Semester #" + scheduler.getCurrentSemester(),
+						availableCourses));
 				System.out.print("Enter the list index corresponding to the class you want to add to this semester: ");
-				int vertex = -1;
-				do 
-				{
-					vertex = scheduler.convertIndexToVertex(getNumber(Integer.MIN_VALUE, Integer.MAX_VALUE));
-					if(vertex == -1) 
-					{
-						System.out.print("Invalid list index entered please enter again: ");
-					}
-				}while(vertex == -1);
+				int listIndex = getNumber(1,availableCourses.size());
+				int vertex = scheduler.convertIndexToVertex(listIndex);
 				scheduler.addClassToSemester(vertex);
+				scheduler.getAvailableCourses().remove(listIndex - 1);
 			}
 		});
 		

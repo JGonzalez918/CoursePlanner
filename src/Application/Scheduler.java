@@ -41,6 +41,8 @@ public class Scheduler
 		this.courseList = parsedFile.getCourseList();
 		this.startYear = parsedFile.getStartYear();
 		this.startTerm = parsedFile.getStartTerm();
+		this.availableCourses = new ArrayList<>();
+		
 		if(startTerm.equals("FALL")) {
 			TERM_NAMES[0] = "Spring";
 			TERM_NAMES[1] = "Fall";
@@ -267,6 +269,18 @@ public class Scheduler
 				(semester/2 + startYear);
 	}
 	
+	public String convertCourseListToStr(String header, ArrayList<Integer> subList) 
+	{
+		StringBuilder s = new StringBuilder();
+		s.append(header + "\n");
+		for(int i = 0; i < subList.size(); i++)
+		{
+			Course course = courseList.get(subList.get(i));
+			s.append((i + 1) + ") " + course.classId + " " + course.courseName + " " +course.unitWorth + "\n");
+		} 
+		return s.toString();
+	}
+	
 	public String getPlannedSchedule() 
 	{
 		Collections.sort(sortedCourseList, new Comparator<Course>()
@@ -283,15 +297,17 @@ public class Scheduler
 			i++;
 		}
 		StringBuilder s = new StringBuilder();
-		s.append("Planned schedule is listed below:\n");
+		s.append("\nPlanned schedule is listed below:\n");
 		while(i < sortedCourseList.size()) 
 		{
 			int semesterBlock = sortedCourseList.get(i).semesterClassCompleted;
-			s.append(semesterBlock);
+			s.append("Semester #" + semesterBlock + " " + convertSemesterToTerm(semesterBlock) + "\n");
+			int label = 1;
 			while(i < sortedCourseList.size() && sortedCourseList.get(i).semesterClassCompleted == semesterBlock) 
 			{
-				s.append(sortedCourseList.get(i).toString() + "\n");
+				s.append(label + ") " + sortedCourseList.get(i).toString() + "\n");
 				i++;
+				label++;
 			}
 		}
 		return s.toString();
