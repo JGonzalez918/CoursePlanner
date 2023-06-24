@@ -16,6 +16,8 @@ public class Scheduler
 	
 	private ArrayList<Course> sortedCourseList;
 	
+	private ArrayList<Integer> availableCourses;
+	
 	private AdjList classStructure;
 	
 	private AdjList prereqGraph;
@@ -50,12 +52,12 @@ public class Scheduler
 		sortedCourseList = new ArrayList<>(parsedFile.getCourseList());
 		classStructure = new AdjList(courseList.size());
 		prereqGraph = new AdjList(courseList.size());
-		currentSemester = 1;
 		coursesProcessed = 0;
 		
 		buildGraph(parsedFile.getIdToVertex(), parsedFile.getRawPrerequisites());
 		checkIfCycle();
 		markInitialClasses();
+		setCurrentSemester(1);
 	}
 	
 	/**
@@ -216,26 +218,25 @@ public class Scheduler
 			return false;
 		}
 		this.currentSemester = currentSemester;
+		setAvailableClasses();
 		return true;
 	}
-	public String getAvailableClasses() 
+	
+	private void setAvailableClasses() 
 	{
-		StringBuilder s = new StringBuilder();
-		int listIndex = 1;
-		s.append("Available Classes for ");
-		String term = TERM_NAMES[(currentSemester % 2)];
-		s.append(term + " ");
-		int year = Math.floorDiv(currentSemester - 1 ,2) + startYear;
-		s.append(year + "\n");
+		availableCourses.clear();
 		for(int i = 0; i < courseList.size(); i++) 
 		{
 			if(canBeTaken(i)) 
 			{
-				s.append(listIndex + ")" + courseList.get(i).toString() + "\n");
-				listIndex++;
+				availableCourses.add(i);
 			}
 		}
-		return s.toString();
+	}
+	
+	public ArrayList<Integer> getAvailableCourses()
+	{
+		return availableCourses;
 	}
 	
 	//Index is in the range of 1 - n where n is the number of courses in the list
