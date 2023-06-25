@@ -122,14 +122,13 @@ public class Main
 					int index = getNumber(1, scheduler.getSortedCourseList().size());
 					vertex = scheduler.getSortedCourseList().get(index - 1);
 				}else {
-					System.out.println("Enter the course id: ");
+					System.out.print("Enter the course id: ");
 					vertex = parsedFile.convertedIdToVertex(parsedFile.removeIllegalChars(kb.nextLine()));
-					if(vertex == null) 
+					if(vertex == null)
 					{
 						System.out.println("The entered course id does not exists");
 						return;
 					}
-					
 				}
 				prereqs = scheduler.getPrereqList(vertex);
 				if(prereqs.isEmpty()) 
@@ -165,7 +164,8 @@ public class Main
 			try
 			{
 				number = kb.nextInt();
-				if(number >= min || number <= max) 
+				kb.nextLine();
+				if(number >= min && number <= max) 
 				{
 					numberPicked = true;
 				}
@@ -179,6 +179,7 @@ public class Main
 			catch (InputMismatchException e)
 			{
 				System.out.print("The string entered was not a number. Please enter again: ");
+				kb.nextLine();
 			}
 
 		}
