@@ -104,6 +104,15 @@ public class Main
 			}
 		});
 		
+		userActions.add(new Action("Remove a course from the schedule") 
+		{
+			@Override
+			public void doAction()
+			{
+				
+			}
+		});
+		
 		userActions.add(new Action("Show the prerequisites required for a certain course") 
 		{
 			@Override
