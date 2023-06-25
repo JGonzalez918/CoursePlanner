@@ -27,7 +27,8 @@ public class Main
 		{
 			promptUserForAction();
 		}
-		
+		kb.close();
+		inputFile.close();
 	}
 	
 
