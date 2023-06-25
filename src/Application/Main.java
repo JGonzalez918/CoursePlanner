@@ -73,11 +73,7 @@ public class Main
 		System.out.println("Current Semester: " + scheduler.convertSemesterToTerm(scheduler.getCurrentSemester())
 						+  " Semester Number: " + scheduler.getCurrentSemester());
 		System.out.print("Enter the number corresponding to the action you want to take:");
-		int actionIndex = -1;
-		do 
-		{
-			actionIndex = getNumber(1,userActions.size());
-		}while(actionIndex < 1 || actionIndex > userActions.size());
+		int actionIndex = getNumber(1,userActions.size());
 		userActions.get(actionIndex - 1).doAction();
 	}
 	
