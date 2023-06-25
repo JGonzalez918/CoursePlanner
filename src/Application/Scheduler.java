@@ -287,7 +287,7 @@ public class Scheduler
 		for(int i = 0; i < subList.size(); i++)
 		{
 			Course course = courseList.get(subList.get(i));
-			s.append((i + 1) + ") " + courseList.get(i).toString() + "\n");
+			s.append((i + 1) + ") " + course.toString() + "\n");
 		} 
 		return s.toString();
 	}
