@@ -107,13 +107,39 @@ public class Main
 			}
 		});
 		
-		userActions.add(new Action("Print Courses Required for x") 
+		userActions.add(new Action("Show the prerequisites required for a certain course") 
 		{
 			@Override
 			public void doAction()
 			{
-				// TODO Auto-generated method stub
-				
+				System.out.println(scheduler.convertCourseListToStr("All Courses are listed below in no particular order", scheduler.getSortedCourseList()));
+				System.out.print("Enter 1 if you want to enter a list index or 2 if you want to enter a course id: ");
+				int inputType = getNumber(1, 2);
+				Integer vertex = -1;
+				ArrayList<Integer> prereqs = null;
+				if(inputType == 1) {
+					System.out.print("Enter the list index: ");
+					int index = getNumber(1, scheduler.getSortedCourseList().size());
+					vertex = scheduler.getSortedCourseList().get(index - 1);
+				}else {
+					System.out.println("Enter the course id: ");
+					vertex = parsedFile.convertedIdToVertex(parsedFile.removeIllegalChars(kb.nextLine()));
+					if(vertex == null) 
+					{
+						System.out.println("The entered course id does not exists");
+						return;
+					}
+					
+				}
+				prereqs = scheduler.getPrereqList(vertex);
+				if(prereqs.isEmpty()) 
+				{
+					System.out.println("This course has no prerequisites");
+				}
+				else 
+				{
+					System.out.println(scheduler.convertCourseListToStr("The prerequisites to " + scheduler.getCourseList().get(vertex).courseName + "are: ", prereqs));
+				}
 			}
 		});
 		

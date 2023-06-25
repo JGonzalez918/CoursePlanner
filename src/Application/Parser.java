@@ -95,7 +95,7 @@ public class Parser
 		rawPrerequisites.add(prereqList);
 	}
 	
-	private String removeIllegalChars(String string) 
+	public String removeIllegalChars(String string) 
 	{
 		StringBuilder s = new StringBuilder();
 		for(char c : string.toCharArray()) 
@@ -112,6 +112,10 @@ public class Parser
 		return s.toString();
 	}
 
+	public Integer convertedIdToVertex(String id) 
+	{
+		return idToVertex.get(id);
+	}
 
 	public ArrayList<Course> getCourseList()
 	{

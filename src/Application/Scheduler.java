@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import Exceptions.ContainsCycle;
 import Exceptions.UndeclaredCourse;
@@ -245,6 +247,11 @@ public class Scheduler
 		return availableCourses;
 	}
 	
+	public ArrayList<Integer> getSortedCourseList()
+	{
+		return sortedCourseList;
+	}
+	
 	//Index is in the range of 1 - n where n is the number of courses in the list
 	public int convertIndexToVertex(int index) 
 	{
@@ -280,7 +287,7 @@ public class Scheduler
 		for(int i = 0; i < subList.size(); i++)
 		{
 			Course course = courseList.get(subList.get(i));
-			s.append((i + 1) + ") " + course.classId + " " + course.courseName + " " +course.unitWorth + "\n");
+			s.append((i + 1) + ") " + courseList.get(i).toString() + "\n");
 		} 
 		return s.toString();
 	}
@@ -320,6 +327,32 @@ public class Scheduler
 	public boolean donePlanning() 
 	{
 		return coursesProcessed == courseList.size();
+	}
+
+	public ArrayList<Integer> getPrereqList(int vertex)
+	{
+		ArrayList<Integer> prereqs = new ArrayList<>();
+		Queue<Integer> q = new LinkedList<>();
+		boolean[] visited = new boolean[courseList.size()];
+		q.add(vertex);
+		while(q.isEmpty() == false) 
+		{
+			int currVertex = q.poll();
+			prereqs.add(currVertex);
+			Edge curr = classStructure.getNeighborList(currVertex).next;
+			while(curr != null) 
+			{
+				if(curr.weight == PREREQUISITE_TO_THIS_VERTEX && visited[curr.vertex] == false) 
+				{
+					q.add(curr.vertex);
+					visited[curr.vertex] = true;
+				}
+				curr = curr.next;
+			}
+			
+		}
+		prereqs.remove(0);
+		return prereqs;
 	}
 
 }
