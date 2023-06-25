@@ -107,6 +107,16 @@ public class Main
 			}
 		});
 		
+		userActions.add(new Action("Print Courses Required for x") 
+		{
+			@Override
+			public void doAction()
+			{
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
 		userActions.add(new Action("Change semester") 
 		{
 			@Override
@@ -117,6 +127,7 @@ public class Main
 				
 			}
 		});
+		
 	}
 	
 	public static int getNumber(int min, int max) 

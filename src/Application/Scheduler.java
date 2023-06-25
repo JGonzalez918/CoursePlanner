@@ -14,7 +14,7 @@ public class Scheduler
 {
 	private ArrayList<Course> courseList;
 	
-	private ArrayList<Course> sortedCourseList;
+	private ArrayList<Integer> sortedCourseList;
 	
 	private ArrayList<Integer> availableCourses;
 	
@@ -51,7 +51,11 @@ public class Scheduler
 			TERM_NAMES[0] = "Fall";
 			TERM_NAMES[1] = "Spring";
 		}
-		sortedCourseList = new ArrayList<>(parsedFile.getCourseList());
+		sortedCourseList = new ArrayList<>();
+		for(int i = 0; i < courseList.size(); i++) 
+		{
+			sortedCourseList.add(i);
+		}
 		classStructure = new AdjList(courseList.size());
 		prereqGraph = new AdjList(courseList.size());
 		coursesProcessed = 0;
@@ -283,16 +287,16 @@ public class Scheduler
 	
 	public String getPlannedSchedule() 
 	{
-		Collections.sort(sortedCourseList, new Comparator<Course>()
+		Collections.sort(sortedCourseList, new Comparator<Integer>()
 		{
-			public int compare(Course o1, Course o2)
+			public int compare(Integer o1, Integer o2)
 			{
-				return o1.semesterClassCompleted - o2.semesterClassCompleted;
+				return courseList.get(o1).semesterClassCompleted - courseList.get(o2).semesterClassCompleted;
 			}
 		});
 		
 		int i = 0; 
-		while(i < sortedCourseList.size() && sortedCourseList.get(i).semesterClassCompleted == -1) 
+		while(i < sortedCourseList.size() && courseList.get(sortedCourseList.get(i)).semesterClassCompleted == -1) 
 		{
 			i++;
 		}
@@ -300,12 +304,12 @@ public class Scheduler
 		s.append("\nPlanned schedule is listed below:\n");
 		while(i < sortedCourseList.size()) 
 		{
-			int semesterBlock = sortedCourseList.get(i).semesterClassCompleted;
+			int semesterBlock = courseList.get(sortedCourseList.get(i)).semesterClassCompleted;
 			s.append("Semester #" + semesterBlock + " " + convertSemesterToTerm(semesterBlock) + "\n");
 			int label = 1;
-			while(i < sortedCourseList.size() && sortedCourseList.get(i).semesterClassCompleted == semesterBlock) 
+			while(i < sortedCourseList.size() && courseList.get(sortedCourseList.get(i)).semesterClassCompleted == semesterBlock) 
 			{
-				s.append(label + ") " + sortedCourseList.get(i).toString() + "\n");
+				s.append(label + ") " + courseList.get(sortedCourseList.get(i)).toString() + "\n");
 				i++;
 				label++;
 			}
