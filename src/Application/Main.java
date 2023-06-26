@@ -162,6 +162,35 @@ public class Main
 		
 	}
 	
+	public ArrayList<Integer> getNumberList(String numberList)
+	{
+		ArrayList<Integer> digits = new ArrayList<>();
+		int i = 0;
+		while(i < numberList.length()) 
+		{
+			while(i < numberList.length() && Character.isDigit(numberList.charAt(i)) == false) 
+			{
+				i++;
+			}
+			
+			int number = 0;
+			while(i < numberList.length() && Character.isDigit(numberList.charAt(i))) {
+				int digit = numberList.charAt(i) - 'a';
+				if(numberIsInvalid(number,digit)) {
+					break;
+				}
+				number = number * 10 + digit;
+			}
+			digits.add(number);
+		}
+		return digits;
+	}
+	
+	public boolean numberIsInvalid(int number, int digit) 
+	{
+		return number > Integer.MAX_VALUE/10 || number == Integer.MAX_VALUE/10 && digit > 7;
+	}
+	
 	public static int getNumber(int min, int max) 
 	{
 		int number = 0;
