@@ -95,7 +95,7 @@ public class Parser
 		rawPrerequisites.add(prereqList);
 	}
 	
-	public String removeIllegalChars(String string) 
+	public static String removeIllegalChars(String string) 
 	{
 		StringBuilder s = new StringBuilder();
 		for(char c : string.toCharArray()) 

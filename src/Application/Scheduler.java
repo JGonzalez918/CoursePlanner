@@ -34,6 +34,14 @@ public class Scheduler
 	
 	private int currentSemester;
 	
+	private Comparator<Integer> courseComparator = new Comparator<Integer>()
+	{
+		public int compare(Integer o1, Integer o2)
+		{
+			return courseList.get(o1).semesterClassCompleted - courseList.get(o2).semesterClassCompleted;
+		}
+	};
+	
 	private static final int PREREQUISITE_TO_THIS_VERTEX = 1;
 	
 	private static final int  PREREQUISITE_FOR_ANOTHER_VERTEX= 2;
@@ -320,13 +328,7 @@ public class Scheduler
 	
 	public String getPlannedSchedule() 
 	{
-		Collections.sort(sortedCourseList, new Comparator<Integer>()
-		{
-			public int compare(Integer o1, Integer o2)
-			{
-				return courseList.get(o1).semesterClassCompleted - courseList.get(o2).semesterClassCompleted;
-			}
-		});
+		Collections.sort(sortedCourseList, courseComparator);
 		
 		int i = 0; 
 		while(i < sortedCourseList.size() && courseList.get(sortedCourseList.get(i)).semesterClassCompleted == -1) 
@@ -380,5 +382,8 @@ public class Scheduler
 		prereqs.remove(0);
 		return prereqs;
 	}
+	
+
+	
 
 }

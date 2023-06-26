@@ -110,7 +110,15 @@ public class Main
 			public void doAction()
 			{
 				System.out.println(scheduler.getPlannedSchedule());
-				System.out.println(": ");
+				System.out.println("Enter the id of the course you want to remove: ");
+				String id = Parser.removeIllegalChars(kb.nextLine());
+				Integer vertex = parsedFile.convertedIdToVertex(id);
+				if(vertex == null) {
+					System.out.println("Entered course id does not exist double check spelling.");
+					return;
+				}
+				ArrayList<Integer> removedCourses = scheduler.removeCourse(vertex);
+				System.out.println(scheduler.convertCourseListToStr("The removed courses are listed below", removedCourses));
 			}
 		});
 		
@@ -162,7 +170,7 @@ public class Main
 		
 	}
 	
-	public ArrayList<Integer> getNumberList(String numberList)
+	public static ArrayList<Integer> getNumberList(String numberList)
 	{
 		ArrayList<Integer> digits = new ArrayList<>();
 		int i = 0;
@@ -186,7 +194,7 @@ public class Main
 		return digits;
 	}
 	
-	public boolean numberIsInvalid(int number, int digit) 
+	public static boolean numberIsInvalid(int number, int digit) 
 	{
 		return number > Integer.MAX_VALUE/10 || number == Integer.MAX_VALUE/10 && digit > 7;
 	}
