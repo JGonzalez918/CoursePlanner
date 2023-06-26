@@ -97,7 +97,33 @@ public class Scheduler
 		coursesProcessed++;
 	}
 	
-	
+	public ArrayList<Integer> removeCourse(int vertex)
+	{
+		ArrayList<Integer> removedCourses = new ArrayList<>();
+		Queue<Integer> q = new LinkedList<>();
+		boolean[] visited = new boolean[courseList.size()];
+		visited[vertex] = true;
+		q.add(vertex);
+		while(q.isEmpty() == false) 
+		{
+			int currVertex = q.poll();
+			courseList.get(currVertex).semesterClassCompleted = Course.COURSE_NOT_TAKEN;
+			removedCourses.add(currVertex);
+			
+			Edge currEdge = classStructure.getNeighborList(currVertex);
+			while(currEdge != null)
+			{
+				if(currEdge.weight == PREREQUISITE_FOR_ANOTHER_VERTEX && visited[vertex] == false && 
+						courseList.get(currEdge.vertex).semesterClassCompleted != Course.COURSE_NOT_TAKEN) {
+					visited[currEdge.vertex] = true;
+					q.add(currEdge.vertex);
+				}
+				currEdge = currEdge.next;
+			}
+		}
+		setAvailableClasses();
+		return removedCourses;
+	}
 	
 	/*
 	 * Return whether or not a class can be taken during a certain semester.

@@ -109,7 +109,8 @@ public class Main
 			@Override
 			public void doAction()
 			{
-				
+				System.out.println(scheduler.getPlannedSchedule());
+				System.out.println(": ");
 			}
 		});
 		
@@ -143,7 +144,7 @@ public class Main
 				}
 				else 
 				{
-					System.out.println(scheduler.convertCourseListToStr("The prerequisites to " + scheduler.getCourseList().get(vertex).courseName + " are: ", prereqs));
+					System.out.println(scheduler.convertCourseListToStr("The prerequisites to " + scheduler.getCourseList().get(vertex).courseName + "  are: ", prereqs));
 				}
 			}
 		});
