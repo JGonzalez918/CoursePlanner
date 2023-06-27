@@ -1,0 +1,7 @@
+Fall 2019
+A, First Class, 5
+B,Second Class,10,A
+C, Third class,3,B
+D, Third class b, 3, B
+E, Fourth class , 2, C,D
+F, Fifth class, 2 ,E

@@ -56,7 +56,7 @@ public class Main
 			parsedFile = new Parser(inputFile);
 			scheduler = new Scheduler(parsedFile);
 		}
-		catch(Exception e) 
+		catch(InputMismatchException e) 
 		{
 			System.out.println(e.getMessage());
 			System.out.println("Please fix the error and reinput the file.");
@@ -115,6 +115,11 @@ public class Main
 				Integer vertex = parsedFile.convertedIdToVertex(id);
 				if(vertex == null) {
 					System.out.println("Entered course id does not exist double check spelling.");
+					return;
+				}
+				else if(scheduler.getCourseList().get(vertex).semesterClassCompleted == Course.COURSE_NOT_TAKEN) 
+				{
+					System.out.println("This course has not been taken yet");
 					return;
 				}
 				ArrayList<Integer> removedCourses = scheduler.removeCourse(vertex);

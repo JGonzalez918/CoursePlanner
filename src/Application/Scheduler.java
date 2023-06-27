@@ -117,14 +117,19 @@ public class Scheduler
 			int currVertex = q.poll();
 			courseList.get(currVertex).semesterClassCompleted = Course.COURSE_NOT_TAKEN;
 			removedCourses.add(currVertex);
+			coursesProcessed--;
 			
-			Edge currEdge = classStructure.getNeighborList(currVertex);
+			Edge currEdge = classStructure.getNeighborList(currVertex).next;
 			while(currEdge != null)
 			{
-				if(currEdge.weight == PREREQUISITE_FOR_ANOTHER_VERTEX && visited[vertex] == false && 
+				if(currEdge.weight == PREREQUISITE_FOR_ANOTHER_VERTEX) {
+					if(visited[currEdge.vertex] == false && 
 						courseList.get(currEdge.vertex).semesterClassCompleted != Course.COURSE_NOT_TAKEN) {
-					visited[currEdge.vertex] = true;
-					q.add(currEdge.vertex);
+						visited[currEdge.vertex] = true;
+						q.add(currEdge.vertex);
+					}
+					prereqGraph.addEdge(currEdge.vertex, currVertex, PREREQUISITE_TO_THIS_VERTEX);
+					courseList.get(currEdge.vertex).semesterPrereqCompleted = Course.PREREQ_NOT_COMPLETED;
 				}
 				currEdge = currEdge.next;
 			}
