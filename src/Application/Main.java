@@ -3,6 +3,7 @@ package Application;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -72,7 +73,7 @@ public class Main
 		}
 		System.out.println("Current Semester: " + scheduler.convertSemesterToTerm(scheduler.getCurrentSemester())
 						+  " Semester Number: " + scheduler.getCurrentSemester());
-		System.out.print("Enter the number corresponding to the action you want to take:");
+		System.out.print("Enter the number corresponding to the action you want to take: ");
 		int actionIndex = getNumber(1,userActions.size());
 		userActions.get(actionIndex - 1).doAction();
 	}
@@ -88,19 +89,27 @@ public class Main
 		});
 		
 		//TODO: Have add course action take a list of numbers rather than only one
-		userActions.add(new Action("Add a course to the current semester") 
+		userActions.add(new Action("Add a courses to the current semester") 
 		{
 			@Override
 			public void doAction()
 			{
 				ArrayList<Integer> availableCourses = scheduler.getAvailableCourses();
-				System.out.println(scheduler.convertCourseListToStr("\nCourses available for " + scheduler.convertSemesterToTerm(scheduler.getCurrentSemester()) + " Semester #" + scheduler.getCurrentSemester(),
-						availableCourses));
-				System.out.print("Enter the list index corresponding to the class you want to add to this semester: ");
-				int listIndex = getNumber(1,availableCourses.size());
-				int vertex = scheduler.convertIndexToVertex(listIndex);
-				scheduler.addClassToSemester(vertex);
-				scheduler.getAvailableCourses().remove(listIndex - 1);
+				System.out.println(scheduler.convertCourseListToStr("\nCourses available for " + scheduler.convertSemesterToTerm(scheduler.getCurrentSemester()) + " Semester #" + scheduler.getCurrentSemester()
+						,availableCourses));
+				System.out.print("Enter a list of indexes that correspond to the classes you want to add to this semester: ");
+				ArrayList<Integer> listIndexes = getNumberList(kb.nextLine());
+				System.out.println(listIndexes);
+				
+				Collections.sort(listIndexes,Collections.reverseOrder());
+				for(int i : listIndexes)
+				{
+					if(i >= 0 && i < availableCourses.size())
+					{
+						scheduler.addClassToSemester(availableCourses.get(i - 1));
+						availableCourses.remove(i - 1);
+					}
+				}
 			}
 		});
 		
@@ -143,7 +152,7 @@ public class Main
 					vertex = scheduler.getSortedCourseList().get(index - 1);
 				}else {
 					System.out.print("Enter the course id: ");
-					vertex = parsedFile.convertedIdToVertex(parsedFile.removeIllegalChars(kb.nextLine()));
+					vertex = parsedFile.convertedIdToVertex(Parser.removeIllegalChars(kb.nextLine()));
 					if(vertex == null)
 					{
 						System.out.println("The entered course id does not exists");
@@ -185,14 +194,16 @@ public class Main
 			{
 				i++;
 			}
-			
+			if(i == numberList.length()) {break;}
 			int number = 0;
 			while(i < numberList.length() && Character.isDigit(numberList.charAt(i))) {
-				int digit = numberList.charAt(i) - 'a';
+				int digit = numberList.charAt(i) - '0';
 				if(numberIsInvalid(number,digit)) {
+					number = -1;
 					break;
 				}
 				number = number * 10 + digit;
+				i++;
 			}
 			digits.add(number);
 		}
