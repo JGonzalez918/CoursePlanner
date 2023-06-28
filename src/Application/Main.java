@@ -99,7 +99,6 @@ public class Main
 						,availableCourses));
 				System.out.print("Enter a list of indexes that correspond to the classes you want to add to this semester: ");
 				ArrayList<Integer> listIndexes = getNumberList(kb.nextLine());
-				System.out.println(listIndexes);
 				
 				Collections.sort(listIndexes,Collections.reverseOrder());
 				for(int i : listIndexes)
