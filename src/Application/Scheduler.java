@@ -346,13 +346,17 @@ public class Scheduler
 		{
 			int semesterBlock = courseList.get(sortedCourseList.get(i)).semesterClassCompleted;
 			s.append("Semester #" + semesterBlock + " " + convertSemesterToTerm(semesterBlock) + "\n");
+			int totalUnits = 0;
 			int label = 1;
 			while(i < sortedCourseList.size() && courseList.get(sortedCourseList.get(i)).semesterClassCompleted == semesterBlock) 
 			{
-				s.append(label + ") " + courseList.get(sortedCourseList.get(i)).toString() + "\n");
+				Course course = courseList.get(sortedCourseList.get(i));
+				s.append(label + ") " + course.toString() + "\n");
+				totalUnits += course.unitWorth;
 				i++;
 				label++;
 			}
+			s.append("Total Units This Semester: " + totalUnits + "\n");
 		}
 		return s.toString();
 	}
