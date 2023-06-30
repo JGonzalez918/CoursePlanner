@@ -112,6 +112,16 @@ public class Main
 			}
 		});
 		
+		userActions.add(new Action("Add a course concurrently with its prerequisites") 
+		{
+			@Override
+			public void doAction()
+			{
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
 		userActions.add(new Action("Remove a course from the schedule") 
 		{
 			@Override
