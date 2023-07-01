@@ -118,6 +118,13 @@ public class Main
 			public void doAction()
 			{
 				System.out.println("Enter the course id that you want to add concurrently with its prerequisites");
+				String id = Parser.removeIllegalChars(kb.nextLine());
+				Integer vertex = parsedFile.convertedIdToVertex(id);
+				if(vertex == null) 
+				{
+					System.out.println("Course id does not exist");
+				}
+				scheduler.addClassConcurrently(vertex);
 			}
 		});
 		

@@ -111,6 +111,33 @@ public class Scheduler
 		coursesProcessed++;
 	}
 	
+	public boolean addClassConcurrently(int vertex)
+	{
+		if(allPrereqsCompleted(vertex) == false) {
+			return false;
+		}
+		return true;
+	}
+	
+	/*
+	 * Function checks to see if all prerequisites that can not be taken concurrently have been completed.
+	 * This is check is necessary because a class can be taken concurrently with a subset of its prerequisites if all 
+	 * non concurrent prerequisites are completed.
+	 */
+	private boolean allPrereqsCompleted(int vertex)
+	{
+		Edge currPrereq = prereqGraph.getNeighborList(vertex).next;
+		while(currPrereq != null) 
+		{
+			if(currPrereq.weight != CONCURRENT_PREREQUISITE) 
+			{
+				return false;
+			}
+			currPrereq = currPrereq.next;
+		}
+		return true;
+	}
+
 	public ArrayList<Integer> removeCourse(int vertex)
 	{
 		ArrayList<Integer> removedCourses = new ArrayList<>();
@@ -134,6 +161,7 @@ public class Scheduler
 						visited[currEdge.vertex] = true;
 						q.add(currEdge.vertex);
 					}
+					//TODO: have it add back the correct edge weight
 					prereqGraph.addEdge(currEdge.vertex, currVertex, PREREQUISITE_TO_THIS_VERTEX);
 					courseList.get(currEdge.vertex).semesterPrereqCompleted = Course.PREREQ_NOT_COMPLETED;
 				}
@@ -405,8 +433,4 @@ public class Scheduler
 		prereqs.remove(0);
 		return prereqs;
 	}
-	
-
-	
-
 }
