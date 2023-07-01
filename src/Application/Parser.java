@@ -29,6 +29,8 @@ public class Parser
 	
 	private int startYear;
 	
+	private static final String CONCURRENT_FLAG = "-C";
+	
 	private static final String COMMA_SEPERATOR = ",";
 	
 	private static final int ID_INDEX = 0;
@@ -78,6 +80,10 @@ public class Parser
 				  + "\nWhere the <Course_ID_List> can be empty or a comma seperated list of course ids");
 		}
 		String courseId = removeIllegalChars(courseInfo[ID_INDEX]);
+		if(courseId.endsWith(CONCURRENT_FLAG)) 
+		{
+			throw new RuntimeException("Course id's declarations cannot end with \"'C\"");
+		}
 		String courseName = courseInfo[NAME_INDEX].strip();
 		int unitWorth = (int)Double.parseDouble(courseInfo[UNITS_INDEX].strip());
 		
@@ -98,16 +104,19 @@ public class Parser
 	public static String removeIllegalChars(String string) 
 	{
 		StringBuilder s = new StringBuilder();
-		for(char c : string.toCharArray()) 
+		int i = 0;
+		while(i < string.length())
 		{
+			char c = string.charAt(i);
 			if(Character.isAlphabetic(c)) 
 			{
 				s.append(Character.toUpperCase(c));
 			}
-			else if(Character.isDigit(c)) 
+			else if(Character.isDigit(c) || c == '-') 
 			{
 				s.append(c);
 			}
+			i++;
 		}
 		return s.toString();
 	}
