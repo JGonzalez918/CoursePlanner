@@ -29,7 +29,7 @@ public class Parser
 	
 	private int startYear;
 	
-	private static final String CONCURRENT_FLAG = "-C";
+	public static final String CONCURRENT_FLAG = "-C";
 	
 	private static final String COMMA_SEPERATOR = ",";
 	

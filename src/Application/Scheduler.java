@@ -42,6 +42,10 @@ public class Scheduler
 		}
 	};
 	
+	private static final int NORMAL_PREREQUISITE = 1;
+	
+	private static final int CONCURRENT_PREREQUISITE = 2;
+	
 	private static final int PREREQUISITE_TO_THIS_VERTEX = 1;
 	
 	private static final int  PREREQUISITE_FOR_ANOTHER_VERTEX= 2;
@@ -168,6 +172,12 @@ public class Scheduler
 			ArrayList<String> prerequisitesForVertex = rawPrerequisites.get(i);
 			for(String s : prerequisitesForVertex) 
 			{
+				int prereqWeight = NORMAL_PREREQUISITE;
+				if(s.endsWith(Parser.CONCURRENT_FLAG)) 
+				{
+					s = s.substring(0,s.length() -  Parser.CONCURRENT_FLAG.length());
+					prereqWeight = CONCURRENT_PREREQUISITE;
+				}
 				Integer prereqVertex = idToVertex.get(s);
 				if(prereqVertex == null)
 				{
@@ -175,7 +185,7 @@ public class Scheduler
 				}
 				classStructure.addEdge(i, prereqVertex, PREREQUISITE_TO_THIS_VERTEX);
 				classStructure.addEdge(prereqVertex, i, PREREQUISITE_FOR_ANOTHER_VERTEX);
-				prereqGraph.addEdge(i, prereqVertex, PREREQUISITE_TO_THIS_VERTEX);
+				prereqGraph.addEdge(i, prereqVertex, prereqWeight);
 			}
 		}
 	}
