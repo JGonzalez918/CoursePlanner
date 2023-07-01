@@ -49,6 +49,8 @@ public class Scheduler
 	private static final int PREREQUISITE_TO_THIS_VERTEX = 1;
 	
 	private static final int  PREREQUISITE_FOR_ANOTHER_VERTEX= 2;
+
+	private static final int CONCURRENT_PREREQUISITE_TO_THIS_VERTEX = 0;
 	
 	public Scheduler(Parser parsedFile) 
 	{
@@ -173,17 +175,19 @@ public class Scheduler
 			for(String s : prerequisitesForVertex) 
 			{
 				int prereqWeight = NORMAL_PREREQUISITE;
+				int structureWegith = PREREQUISITE_TO_THIS_VERTEX;
 				if(s.endsWith(Parser.CONCURRENT_FLAG)) 
 				{
 					s = s.substring(0,s.length() -  Parser.CONCURRENT_FLAG.length());
 					prereqWeight = CONCURRENT_PREREQUISITE;
+					structureWegith = CONCURRENT_PREREQUISITE_TO_THIS_VERTEX;
 				}
 				Integer prereqVertex = idToVertex.get(s);
 				if(prereqVertex == null)
 				{
 					throw new UndeclaredCourse("The given prerequisite " + s +" for class " + courseList.get(i).courseName + " was not declared in the input file");
 				}
-				classStructure.addEdge(i, prereqVertex, PREREQUISITE_TO_THIS_VERTEX);
+				classStructure.addEdge(i, prereqVertex, structureWegith);
 				classStructure.addEdge(prereqVertex, i, PREREQUISITE_FOR_ANOTHER_VERTEX);
 				prereqGraph.addEdge(i, prereqVertex, prereqWeight);
 			}

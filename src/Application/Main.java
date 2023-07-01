@@ -117,8 +117,7 @@ public class Main
 			@Override
 			public void doAction()
 			{
-				// TODO Auto-generated method stub
-				
+				System.out.println("Enter the course id that you want to add concurrently with its prerequisites");
 			}
 		});
 		
