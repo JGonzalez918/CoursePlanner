@@ -117,23 +117,40 @@ public class Scheduler
 	
 	public boolean addClassConcurrently(int vertex)
 	{
-		if(allPrereqsCompleted(vertex) == false) {
+		if(readyForConcurrentEnrollment(vertex) == false) {
 			return false;
 		}
+		//Given that we did not return false from the above statement all the vertexes left in the prereq list 
+		//are concurrent vertices that have not been taken and can  be added to the current semester
+		Edge prereq = prereqGraph.getNeighborList(vertex).next;
+		while(prereq != null) 
+		{
+			if(courseList.get(prereq.vertex).semesterClassCompleted == Course.COURSE_NOT_TAKEN) 
+			{
+				addClassToSemester(prereq.vertex);
+			}
+			prereq = prereq.next;
+		}
+		addClassToSemester(vertex);
 		return true;
 	}
 	
 	/*
 	 * Function checks to see if all prerequisites that can not be taken concurrently have been completed.
 	 * This is check is necessary because a class can be taken concurrently with a subset of its prerequisites if all 
-	 * non concurrent prerequisites are completed.
+	 * of its concurrent prerequisites can be taken in the same semester 
 	 */
-	private boolean allPrereqsCompleted(int vertex)
+	private boolean readyForConcurrentEnrollment(int vertex)
 	{
 		Edge currPrereq = prereqGraph.getNeighborList(vertex).next;
 		while(currPrereq != null) 
 		{
-			if(currPrereq.weight != CONCURRENT_PREREQUISITE) 
+			Course c = courseList.get(currPrereq.vertex);
+			if(currPrereq.weight == NORMAL_PREREQUISITE && (c.semesterClassCompleted == Course.COURSE_NOT_TAKEN || c.semesterClassCompleted >= currentSemester))
+			{
+				return false;
+			}
+			else if(currPrereq.weight == CONCURRENT_PREREQUISITE && (c.semesterClassCompleted > currentSemester ||  canBeTaken(currPrereq.vertex)) == false)
 			{
 				return false;
 			}
