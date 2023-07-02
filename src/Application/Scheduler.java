@@ -20,9 +20,22 @@ public class Scheduler
 	
 	private ArrayList<Integer> availableCourses;
 	
-	private AdjList classStructure;
+	/*
+	 * In the requirement graph there is an edge (u,v) if the vertex u is a prerequisite to the vertex v.
+	 * TO better understand this graph suppose you took some class v during an arbritary semester. If you look at all the edges of v
+	 * in the requirementGraph you would find that all the adjacent vertices are the classes that had u as a prerequisite.
+	 */
+	private AdjList requirementGraph;
 	
+	/*
+	 * in the prereq graph there is an edge (u,v) if the vertex v is a prerequisite to the vertex u
+	 * To better under stand this suppose you took a random vertex v and wanted to take that class.
+	 * If you look at all the edges in the prereqGraph of that vertex all the adjacent vertices would be
+	 * classes you need to take for it.
+	 */
 	private AdjList prereqGraph;
+	
+	private int[] inDegreeCount;
 	
 	private int coursesProcessed;
 	
@@ -46,19 +59,13 @@ public class Scheduler
 	
 	private static final int CONCURRENT_PREREQUISITE = 2;
 	
-	private static final int PREREQUISITE_TO_THIS_VERTEX = 1;
-	
-	private static final int  PREREQUISITE_FOR_ANOTHER_VERTEX= 2;
-
-	private static final int CONCURRENT_PREREQUISITE_TO_THIS_VERTEX = 0;
-	
 	public Scheduler(Parser parsedFile) 
 	{
 		this.courseList = parsedFile.getCourseList();
 		this.startYear = parsedFile.getStartYear();
 		this.startTerm = parsedFile.getStartTerm();
 		this.availableCourses = new ArrayList<>();
-		
+		inDegreeCount = new int[courseList.size()];
 		if(startTerm.equals("FALL")) {
 			TERM_NAMES[0] = "Spring";
 			TERM_NAMES[1] = "Fall";
@@ -72,7 +79,7 @@ public class Scheduler
 		{
 			sortedCourseList.add(i);
 		}
-		classStructure = new AdjList(courseList.size());
+		requirementGraph = new AdjList(courseList.size());
 		prereqGraph = new AdjList(courseList.size());
 		coursesProcessed = 0;
 		
@@ -95,16 +102,13 @@ public class Scheduler
 	{
 		Course takenCourse = courseList.get(vertex);
 		takenCourse.semesterClassCompleted = currentSemester;
-		Edge currEdge = classStructure.getNeighborList(vertex).next;
+		Edge currEdge = requirementGraph.getNeighborList(vertex).next;
 		while(currEdge != null) 
 		{
-			if(currEdge.weight == PREREQUISITE_FOR_ANOTHER_VERTEX) 
+			inDegreeCount[currEdge.vertex]--;
+			if(inDegreeCount[currEdge.vertex] == 0) 
 			{
-				prereqGraph.removeEdge(currEdge.vertex, vertex);
-				if(prereqGraph.getNeighborList(currEdge.vertex).next == null) 
-				{
-					courseList.get(currEdge.vertex).semesterPrereqCompleted = currentSemester;
-				}
+				courseList.get(currEdge.vertex).semesterPrereqCompleted = currentSemester;
 			}
 			currEdge = currEdge.next;
 		}
@@ -152,19 +156,18 @@ public class Scheduler
 			removedCourses.add(currVertex);
 			coursesProcessed--;
 			
-			Edge currEdge = classStructure.getNeighborList(currVertex).next;
+			Edge currEdge = requirementGraph.getNeighborList(currVertex).next;
 			while(currEdge != null)
 			{
-				if(currEdge.weight == PREREQUISITE_FOR_ANOTHER_VERTEX) {
-					if(visited[currEdge.vertex] == false && 
-						courseList.get(currEdge.vertex).semesterClassCompleted != Course.COURSE_NOT_TAKEN) {
-						visited[currEdge.vertex] = true;
-						q.add(currEdge.vertex);
-					}
-					//TODO: have it add back the correct edge weight
-					prereqGraph.addEdge(currEdge.vertex, currVertex, PREREQUISITE_TO_THIS_VERTEX);
-					courseList.get(currEdge.vertex).semesterPrereqCompleted = Course.PREREQ_NOT_COMPLETED;
+				
+				if(visited[currEdge.vertex] == false && 
+					courseList.get(currEdge.vertex).semesterClassCompleted != Course.COURSE_NOT_TAKEN) {
+					visited[currEdge.vertex] = true;
+					q.add(currEdge.vertex);
 				}
+				//TODO: have it add back the correct edge weight
+				inDegreeCount[currEdge.vertex]++;
+				courseList.get(currEdge.vertex).semesterPrereqCompleted = Course.PREREQ_NOT_COMPLETED;
 				currEdge = currEdge.next;
 			}
 		}
@@ -188,7 +191,7 @@ public class Scheduler
 	{
 		for(int i = 0; i < prereqGraph.nodeCount; i++) 
 		{
-			if(prereqGraph.getNeighborList(i).next == null) 
+			if(inDegreeCount[i] == 0) 
 			{
 				courseList.get(i).semesterPrereqCompleted = 0;
 			}
@@ -203,21 +206,20 @@ public class Scheduler
 			for(String s : prerequisitesForVertex) 
 			{
 				int prereqWeight = NORMAL_PREREQUISITE;
-				int structureWegith = PREREQUISITE_TO_THIS_VERTEX;
+				int requirementWeight = NORMAL_PREREQUISITE;
 				if(s.endsWith(Parser.CONCURRENT_FLAG)) 
 				{
 					s = s.substring(0,s.length() -  Parser.CONCURRENT_FLAG.length());
-					prereqWeight = CONCURRENT_PREREQUISITE;
-					structureWegith = CONCURRENT_PREREQUISITE_TO_THIS_VERTEX;
+					prereqWeight = requirementWeight = CONCURRENT_PREREQUISITE;
 				}
 				Integer prereqVertex = idToVertex.get(s);
 				if(prereqVertex == null)
 				{
 					throw new UndeclaredCourse("The given prerequisite " + s +" for class " + courseList.get(i).courseName + " was not declared in the input file");
 				}
-				classStructure.addEdge(i, prereqVertex, structureWegith);
-				classStructure.addEdge(prereqVertex, i, PREREQUISITE_FOR_ANOTHER_VERTEX);
+				requirementGraph.addEdge(prereqVertex, i, requirementWeight);
 				prereqGraph.addEdge(i, prereqVertex, prereqWeight);
+				inDegreeCount[i]++;
 			}
 		}
 	}
@@ -418,10 +420,10 @@ public class Scheduler
 		{
 			int currVertex = q.poll();
 			prereqs.add(currVertex);
-			Edge curr = classStructure.getNeighborList(currVertex).next;
+			Edge curr = requirementGraph.getNeighborList(currVertex).next;
 			while(curr != null) 
 			{
-				if(curr.weight == PREREQUISITE_TO_THIS_VERTEX && visited[curr.vertex] == false) 
+				if(visited[curr.vertex] == false) 
 				{
 					q.add(curr.vertex);
 					visited[curr.vertex] = true;
