@@ -400,7 +400,7 @@ public class Scheduler
 				i++;
 				label++;
 			}
-			s.append("Total Units This Semester: " + totalUnits + "\n");
+			s.append("Total Units This Semester: " + totalUnits + "\n\n");
 		}
 		return s.toString();
 	}

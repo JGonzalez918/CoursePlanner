@@ -103,7 +103,7 @@ public class Main
 				Collections.sort(listIndexes,Collections.reverseOrder());
 				for(int i : listIndexes)
 				{
-					if(i >= 0 && i < availableCourses.size())
+					if(i > 0 && i <= availableCourses.size())
 					{
 						scheduler.addClassToSemester(availableCourses.get(i - 1));
 						availableCourses.remove(i - 1);
@@ -123,6 +123,7 @@ public class Main
 				if(vertex == null) 
 				{
 					System.out.println("Course id does not exist");
+					return;
 				}
 				scheduler.addClassConcurrently(vertex);
 			}
