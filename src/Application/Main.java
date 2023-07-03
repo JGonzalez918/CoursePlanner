@@ -95,8 +95,9 @@ public class Main
 			public void doAction()
 			{
 				ArrayList<Integer> availableCourses = scheduler.getAvailableCourses();
-				System.out.println(scheduler.convertCourseListToStr("\nCourses available for " + scheduler.convertSemesterToTerm(scheduler.getCurrentSemester()) + " Semester #" + scheduler.getCurrentSemester()
-						,availableCourses));
+				System.out.println(scheduler.convertCourseListToStr("\nCourses available for " 
+				+ scheduler.convertSemesterToTerm(scheduler.getCurrentSemester()) 
+				+ " Semester #" + scheduler.getCurrentSemester(),availableCourses));
 				System.out.print("Enter a list of indexes that correspond to the classes you want to add to this semester: ");
 				ArrayList<Integer> listIndexes = getNumberList(kb.nextLine());
 				
@@ -125,7 +126,12 @@ public class Main
 					System.out.println("Course id does not exist");
 					return;
 				}
-				scheduler.addClassConcurrently(vertex);
+				if(scheduler.addClassConcurrently(vertex) == false) 
+				{
+					System.out.println("Course cannot be added concurrently with prerequisites as it does not meet the requirement."
+							+ "\nthat all non-concurrent prerequisites are completed before hand and that all concurrent prerequisites"
+							+ "can be taken during the current semester");
+				}
 			}
 		});
 		
