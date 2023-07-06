@@ -82,7 +82,7 @@ public class Parser
 		String courseId = removeIllegalChars(courseInfo[ID_INDEX]);
 		if(courseId.endsWith(CONCURRENT_FLAG)) 
 		{
-			throw new RuntimeException("Course id's declarations cannot end with \"'C\"");
+			throw new RuntimeException("Course id's cannot end with \"-C\"");
 		}
 		String courseName = courseInfo[NAME_INDEX].strip();
 		int unitWorth = (int)Double.parseDouble(courseInfo[UNITS_INDEX].strip());
