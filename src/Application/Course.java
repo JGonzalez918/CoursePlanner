@@ -10,6 +10,10 @@ public class Course
 	
 	public String courseName;
 	
+	public boolean hasConcurrentPrereqs;
+	
+	public boolean addConcurrently;
+	
 	public int unitWorth;
 	
 	public int semesterPrereqCompleted;
@@ -21,6 +25,8 @@ public class Course
 		this.classId = classId;
 		this.courseName = courseName;
 		this.unitWorth = unitWorth;
+		this.hasConcurrentPrereqs = false;
+		this.addConcurrently = false;
 		this.semesterPrereqCompleted = PREREQ_NOT_COMPLETED;
 		this.semesterClassCompleted = COURSE_NOT_TAKEN;
 	}

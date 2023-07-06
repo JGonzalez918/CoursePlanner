@@ -117,7 +117,6 @@ public class Scheduler
 	
 	public boolean addClassConcurrently(int vertex)
 	{
-		verifyCanBeTakenConcurrently(vertex);
 		//Given that we did not return false from the above statement all the vertexes left in the prereq list 
 		//are concurrent vertices that have not been taken and can  be added to the current semester
 		Edge prereq = prereqGraph.getNeighborList(vertex).next;
@@ -205,8 +204,19 @@ public class Scheduler
 	private boolean canBeTaken(int vertex) 
 	{
 		Course course = courseList.get(vertex);
-		return currentSemester > course.semesterPrereqCompleted &&
-				course.semesterClassCompleted == Course.COURSE_NOT_TAKEN;
+		if(course.hasConcurrentPrereqs == false) 
+		{
+			course.addConcurrently = false;
+			return currentSemester > course.semesterPrereqCompleted;
+		}
+		if(verifyCanBeTakenConcurrently(vertex)) {
+			course.addConcurrently = true;
+			return true;
+		}
+		else {
+			course.addConcurrently = false;
+			return false;
+		}
 	}
 	
 	private void markInitialClasses() 
