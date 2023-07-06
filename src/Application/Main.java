@@ -113,28 +113,6 @@ public class Main
 			}
 		});
 		
-		userActions.add(new Action("Add a course concurrently with its prerequisites") 
-		{
-			@Override
-			public void doAction()
-			{
-				System.out.println("Enter the course id that you want to add concurrently with its prerequisites");
-				String id = Parser.removeIllegalChars(kb.nextLine());
-				Integer vertex = parsedFile.convertedIdToVertex(id);
-				if(vertex == null) 
-				{
-					System.out.println("Course id does not exist");
-					return;
-				}
-				if(scheduler.addClassConcurrently(vertex) == false) 
-				{
-					System.out.println("Course cannot be added concurrently with prerequisites as it does not meet the requirement."
-							+ "\nthat all non-concurrent prerequisites are completed before hand and that all concurrent prerequisites"
-							+ "can be taken during the current semester");
-				}
-			}
-		});
-		
 		userActions.add(new Action("Remove a course from the schedule") 
 		{
 			@Override
