@@ -101,6 +101,21 @@ public class Scheduler
 	public void addClassToSemester(int vertex) 
 	{
 		Course takenCourse = courseList.get(vertex);
+		
+		if(takenCourse.hasConcurrentPrereqs) 
+		{
+			addConcurrently(vertex);
+		}
+		else 
+		{
+			addNormally(vertex);
+		}
+	}
+
+	private void addNormally(int vertex)
+	{
+		Course takenCourse = courseList.get(vertex);
+		availableCourses.remove(Integer.valueOf(vertex));
 		takenCourse.semesterClassCompleted = currentSemester;
 		Edge currEdge = requirementGraph.getNeighborList(vertex).next;
 		while(currEdge != null) 
@@ -115,7 +130,7 @@ public class Scheduler
 		coursesProcessed++;
 	}
 	
-	public boolean addClassConcurrently(int vertex)
+	public boolean addConcurrently(int vertex)
 	{
 		//Given that we did not return false from the above statement all the vertexes left in the prereq list 
 		//are concurrent vertices that have not been taken and can  be added to the current semester
@@ -124,11 +139,11 @@ public class Scheduler
 		{
 			if(courseList.get(prereq.vertex).semesterClassCompleted == Course.COURSE_NOT_TAKEN) 
 			{
-				addClassToSemester(prereq.vertex);
+				addNormally(prereq.vertex);
 			}
 			prereq = prereq.next;
 		}
-		addClassToSemester(vertex);
+		addNormally(vertex);
 		return true;
 	}
 	
@@ -206,15 +221,12 @@ public class Scheduler
 		Course course = courseList.get(vertex);
 		if(course.hasConcurrentPrereqs == false) 
 		{
-			course.addConcurrently = false;
 			return currentSemester > course.semesterPrereqCompleted;
 		}
 		if(verifyCanBeTakenConcurrently(vertex)) {
-			course.addConcurrently = true;
 			return true;
 		}
 		else {
-			course.addConcurrently = false;
 			return false;
 		}
 	}
@@ -242,6 +254,7 @@ public class Scheduler
 				if(s.endsWith(Parser.CONCURRENT_FLAG)) 
 				{
 					s = s.substring(0,s.length() -  Parser.CONCURRENT_FLAG.length());
+					courseList.get(i).hasConcurrentPrereqs = true;
 					prereqWeight = requirementWeight = CONCURRENT_PREREQUISITE;
 				}
 				Integer prereqVertex = idToVertex.get(s);

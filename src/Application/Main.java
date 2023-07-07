@@ -107,7 +107,6 @@ public class Main
 					if(i > 0 && i <= availableCourses.size())
 					{
 						scheduler.addClassToSemester(availableCourses.get(i - 1));
-						availableCourses.remove(i - 1);
 					}
 				}
 			}
