@@ -1,0 +1,10 @@
+Fall 2023
+A, Vertex A, 5,B,C
+B,Vertex B,5,D,E
+C, Vertex C,5,F,G
+D,Vertex D,5
+E, Vertex E,5
+F, Vertex F,5
+G, Vertex G, 5
+H, Vertex H, 5,A
+Z, Vertex I, 5
