@@ -28,10 +28,10 @@ public class Scheduler
 	private AdjList requirementGraph;
 	
 	/*
-	 * in the prereq graph there is an edge (u,v) if the vertex v is a prerequisite to the vertex u
-	 * To better under stand this suppose you took a random vertex v and wanted to take that class.
+	 * in the prereq graph there is an edge (u,v) if the vertex v is a prerequisite to the vertex u.
+	 * To better understand this suppose you took a random vertex v and wanted to take that class.
 	 * If you look at all the edges in the prereqGraph of that vertex all the adjacent vertices would be
-	 * classes you need to take for it.
+	 * classes you need to take before you can take that specific class.
 	 */
 	private AdjList prereqGraph;
 	
