@@ -7,7 +7,10 @@ import java.util.Collections;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class Main
+import javafx.application.Application;
+import javafx.stage.Stage;
+
+public class Main extends Application
 {
 	static Scanner kb = new Scanner(System.in);
 	
@@ -21,17 +24,12 @@ public class Main
 
 	public static void main(String[] args) throws FileNotFoundException, NoSuchFieldException, SecurityException
 	{
-		addUserActions();
-		getInputFile();
-		processFile();
-		while(scheduler.donePlanning() == false) 
-		{
-			promptUserForAction();
-		}
-		kb.close();
-		inputFile.close();
+		launch(args);
 	}
 	
+    public void start(Stage primaryStage) throws Exception{
+    	primaryStage.show();
+    }
 
 	public static void getInputFile() 
 	{
