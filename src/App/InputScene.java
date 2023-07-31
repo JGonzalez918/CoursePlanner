@@ -1,8 +1,9 @@
 package App;
 
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -37,11 +38,11 @@ public class InputScene
 	
 	private TextField courseUnitsField;
 	
-	private ComboBox<String> courseCategoryField;
+	private ComboBox<String> courseCategoryBox;
 	
 	private ComboBox<String> coursePrereqBox;
 	
-	private ListView<String> enteredCourses;
+	private ListView<HBox> enteredCourses;
 	
 	private Button addCourse;
 	
@@ -66,6 +67,89 @@ public class InputScene
 	{
 		buildCategoryInput();
 		buildCourseInput();
+		categoryButtonFunctionality();
+		addCourseButtonFunctionality();
+	}
+
+
+	private void addCourseButtonFunctionality()
+	{
+		addCourse.setOnAction((notUsed) -> {
+			
+		});
+	}
+
+	private void categoryButtonFunctionality()
+	{
+		addCategoryButton.setOnAction((notUsed) -> {			
+			String categoryName = categoryNameField.getText().strip();
+			String categoryUnitRequirement = categoryUnitField.getText().strip();
+
+			if(containsError(categoryName, categoryUnitRequirement)) 
+			{
+				return;
+			}
+			HBox items = makeHBox(categoryName, categoryUnitRequirement);
+			//TODO: add category name to catgeory choice box
+			enteredCategories.getItems().add(items);
+			categoryNameField.clear();
+			categoryUnitField.clear();
+		});
+	}
+
+
+	private HBox makeHBox(String categoryName, String categoryUnitRequirement)
+	{
+		HBox items = new HBox();
+		Button editButton = new Button("Edit");
+		editButton.setOnAction((a) -> {
+			categoryNameField.setText(categoryName);
+			categoryUnitField.setText(categoryUnitRequirement);
+			enteredCategories.getItems().remove(items);
+		});
+		
+		Button deleteButton = new Button("Delete");
+		deleteButton.setOnAction((a) -> {
+			enteredCategories.getItems().remove(items);
+		});
+		items.getChildren().addAll(new Label(categoryName), new Label(categoryUnitRequirement),
+				editButton, deleteButton);
+		return items;
+	}
+
+
+	private boolean containsError(String categoryName, String categoryUnitRequirement)
+	{
+		String errorMessage = "";
+		if(categoryName.isEmpty()) 
+		{
+			errorMessage = "Category field cannot be empty";
+		}
+		if(numberCantBeParsed(categoryUnitRequirement)) 
+		{
+			errorMessage += "\nUnit requirement field cannot be read as an integer";
+		}
+		if(errorMessage.isEmpty() == false) 
+		{
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.contentTextProperty().set(errorMessage);
+			alert.headerTextProperty().set("Missing Information");
+			alert.showAndWait();
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean numberCantBeParsed(String categoryUnitRequirement) 
+	{
+		try 
+		{
+			Integer.parseInt(categoryUnitRequirement);
+		}catch(NumberFormatException e) 
+		{
+			return true;
+		}
+		return false;
 	}
 
 
@@ -77,11 +161,30 @@ public class InputScene
 		layout.add(new Label("Course Units"), 2, COURSE_INPUT_ROW);
 		layout.add(courseUnitsField, 3, COURSE_INPUT_ROW);
 		layout.add(new Label("Course Category"), 4, COURSE_INPUT_ROW);
-		layout.add(courseCategoryField, 5, COURSE_INPUT_ROW);
+		layout.add(courseCategoryBox, 5, COURSE_INPUT_ROW);
 		layout.add(new Label("Course Prerequisites"), 6, COURSE_INPUT_ROW);
 		layout.add(coursePrereqBox, 7, COURSE_INPUT_ROW);
 		layout.add(addCourse, 8, COURSE_INPUT_ROW);
 		layout.add(enteredCourses,0,COURSE_LIST_ROW,9,1);
+		setCourseInputProperties();
+	}
+
+
+	private void setCourseInputProperties()
+	{
+		courseNameField.setPromptText("Enter Name Here");
+		courseUnitsField.setPromptText("Enter Units Here");
+		courseCategoryBox.promptTextProperty().set("Choose Category");
+		coursePrereqBox.promptTextProperty().set("Choose Prerequisites for Course");
+		courseCategoryBox.setEditable(true);
+		coursePrereqBox.setEditable(true);
+	}
+
+
+	private void setCategoryInputProperties()
+	{
+		categoryNameField.setPromptText("Enter Name Here");
+		categoryUnitField.setPromptText("Enter Units Here");
 	}
 
 
@@ -94,6 +197,7 @@ public class InputScene
 		layout.add(categoryUnitField, 3, CATEGORY_INPUT_ROW);
 		layout.add(addCategoryButton, 4, CATEGORY_INPUT_ROW);
 		layout.add(enteredCategories, 0, CATEGORY_LIST_ROW,9,1);
+		setCategoryInputProperties();
 	}
 
 
@@ -107,11 +211,9 @@ public class InputScene
 		addCategoryButton = new Button("Add category");
 		courseNameField = new TextField();
 		courseUnitsField = new TextField();
-		courseCategoryField = new ComboBox<>();
-		courseCategoryField.setEditable(true);
+		courseCategoryBox = new ComboBox<>();
 		coursePrereqBox = new ComboBox<>();
-		coursePrereqBox.setEditable(true);
-		enteredCourses = new ListView<String>();
+		enteredCourses = new ListView<>();
 		addCourse = new Button("Add Course");
 	}
 }
