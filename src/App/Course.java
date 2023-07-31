@@ -1,4 +1,4 @@
-package Application;
+package App;
 
 public class Course
 {
