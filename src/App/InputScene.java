@@ -1,5 +1,6 @@
 package App;
 
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -19,7 +20,11 @@ public class InputScene
 	private Scene inputScene;
 		
 	private GridPane layout;
+	
+	private Alert missingInfoError;
 
+	private TextField categoryAbbreviation;
+	
 	private TextField categoryNameField;
 	
 	private TextField categoryUnitField;
@@ -33,6 +38,8 @@ public class InputScene
 	private final static int CATEGORY_INPUT_ROW = 1;
 	
 	private final static int CATEGORY_LIST_ROW = 2;
+	
+	private TextField courseAbbreviation;
 	
 	private TextField courseNameField;
 	
@@ -52,10 +59,17 @@ public class InputScene
 	
 	private final static int COURSE_LIST_ROW = 5;
 	
+	private final static int MAX_COLUMS = 11;
+
+	private final static double PADDING = 1;
+
+	private static final double SPACING = 25;
+	
 	
 	public InputScene(Stage primaryStage) 
 	{
 		this.primaryStage = primaryStage;
+		primaryStage.setResizable(false);
 		initialize();
 		buildScene();
 		primaryStage.setScene(inputScene);
@@ -81,60 +95,71 @@ public class InputScene
 
 	private void categoryButtonFunctionality()
 	{
-		addCategoryButton.setOnAction((notUsed) -> {			
+		addCategoryButton.setOnAction((notUsed) -> {	
+			String categoryAbbr = categoryAbbreviation.getText().strip();
 			String categoryName = categoryNameField.getText().strip();
 			String categoryUnitRequirement = categoryUnitField.getText().strip();
 
-			if(containsError(categoryName, categoryUnitRequirement)) 
+			if(containsError(categoryAbbr, categoryName, categoryUnitRequirement)) 
 			{
 				return;
 			}
-			HBox items = makeHBox(categoryName, categoryUnitRequirement);
-			//TODO: add category name to catgeory choice box
-			enteredCategories.getItems().add(items);
+			HBox categoryBox = makeHBox(categoryAbbr,categoryName, categoryUnitRequirement);
+			//TODO: add category name to category choice box
+			enteredCategories.getItems().add(categoryBox);
+			categoryAbbreviation.clear();
 			categoryNameField.clear();
 			categoryUnitField.clear();
 		});
 	}
 
 
-	private HBox makeHBox(String categoryName, String categoryUnitRequirement)
+	private HBox makeHBox(String categoryAbbr, String categoryName, String categoryUnitRequirement)
 	{
-		HBox items = new HBox();
+		HBox categoryBox = new HBox();
+		categoryBox.setSpacing(SPACING);
+		categoryBox.setPadding(new Insets(PADDING));
+		
 		Button editButton = new Button("Edit");
 		editButton.setOnAction((a) -> {
+			categoryAbbreviation.setText(categoryAbbr);
 			categoryNameField.setText(categoryName);
 			categoryUnitField.setText(categoryUnitRequirement);
-			enteredCategories.getItems().remove(items);
+			enteredCategories.getItems().remove(categoryBox);
 		});
 		
 		Button deleteButton = new Button("Delete");
 		deleteButton.setOnAction((a) -> {
-			enteredCategories.getItems().remove(items);
+			enteredCategories.getItems().remove(categoryBox);
 		});
-		items.getChildren().addAll(new Label(categoryName), new Label(categoryUnitRequirement),
+		
+		categoryBox.getChildren().addAll(new Label(categoryAbbr), new Label(categoryName), new Label(categoryUnitRequirement + " Units"),
 				editButton, deleteButton);
-		return items;
+		
+		return categoryBox;
 	}
 
 
-	private boolean containsError(String categoryName, String categoryUnitRequirement)
+	private boolean containsError(String categoryAbrr, String categoryName, String categoryUnitRequirement)
 	{
 		String errorMessage = "";
+		if(categoryAbrr.isEmpty()) 
+		{
+			errorMessage = "Category Abbreviation field cannot be empty\n";
+		}
 		if(categoryName.isEmpty()) 
 		{
-			errorMessage = "Category field cannot be empty";
+			errorMessage += "Category field cannot be empty\n";
 		}
 		if(numberCantBeParsed(categoryUnitRequirement)) 
 		{
-			errorMessage += "\nUnit requirement field cannot be read as an integer";
+			errorMessage += "Unit requirement field cannot be read as an integer";
 		}
 		if(errorMessage.isEmpty() == false) 
 		{
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.contentTextProperty().set(errorMessage);
-			alert.headerTextProperty().set("Missing Information");
-			alert.showAndWait();
+			missingInfoError.contentTextProperty().set(errorMessage);
+			missingInfoError.headerTextProperty().set("Missing Information");
+			missingInfoError.showAndWait();
 			return true;
 		}
 		return false;
@@ -156,24 +181,27 @@ public class InputScene
 	private void buildCourseInput()
 	{
 		layout.add(new Label("Courses:"), 0, COURSE_LABEL_ROW);
-		layout.add(new Label("Course Name"), 0, COURSE_INPUT_ROW);
-		layout.add(courseNameField, 1, COURSE_INPUT_ROW);
-		layout.add(new Label("Course Units"), 2, COURSE_INPUT_ROW);
-		layout.add(courseUnitsField, 3, COURSE_INPUT_ROW);
-		layout.add(new Label("Course Category"), 4, COURSE_INPUT_ROW);
-		layout.add(courseCategoryBox, 5, COURSE_INPUT_ROW);
-		layout.add(new Label("Course Prerequisites"), 6, COURSE_INPUT_ROW);
-		layout.add(coursePrereqBox, 7, COURSE_INPUT_ROW);
-		layout.add(addCourse, 8, COURSE_INPUT_ROW);
-		layout.add(enteredCourses,0,COURSE_LIST_ROW,9,1);
+		layout.add(new Label("Course abbreviation"), 0, COURSE_INPUT_ROW);
+		layout.add(courseAbbreviation, 1, COURSE_INPUT_ROW);
+		layout.add(new Label("Course Name"), 2, COURSE_INPUT_ROW);
+		layout.add(courseNameField, 3, COURSE_INPUT_ROW);
+		layout.add(new Label("Course Units"), 4, COURSE_INPUT_ROW);
+		layout.add(courseUnitsField, 5, COURSE_INPUT_ROW);
+		layout.add(new Label("Course Category"), 6, COURSE_INPUT_ROW);
+		layout.add(courseCategoryBox, 7, COURSE_INPUT_ROW);
+		layout.add(new Label("Course Prerequisites"), 8, COURSE_INPUT_ROW);
+		layout.add(coursePrereqBox, 9, COURSE_INPUT_ROW);
+		layout.add(addCourse, 10, COURSE_INPUT_ROW);
+		layout.add(enteredCourses,0,COURSE_LIST_ROW,MAX_COLUMS,1);
 		setCourseInputProperties();
 	}
 
 
 	private void setCourseInputProperties()
 	{
-		courseNameField.setPromptText("Enter Name Here");
-		courseUnitsField.setPromptText("Enter Units Here");
+		courseAbbreviation.setPromptText("Enter abbreviation to course");
+		courseNameField.setPromptText("Enter Name");
+		courseUnitsField.setPromptText("Enter Units");
 		courseCategoryBox.promptTextProperty().set("Choose Category");
 		coursePrereqBox.promptTextProperty().set("Choose Prerequisites for Course");
 		courseCategoryBox.setEditable(true);
@@ -183,20 +211,23 @@ public class InputScene
 
 	private void setCategoryInputProperties()
 	{
-		categoryNameField.setPromptText("Enter Name Here");
-		categoryUnitField.setPromptText("Enter Units Here");
+		categoryAbbreviation.setPromptText("Enter abbreviation");
+		categoryNameField.setPromptText("Enter Name");
+		categoryUnitField.setPromptText("Enter Units");
 	}
 
 
 	private void buildCategoryInput()
 	{
 		layout.add(new Label("Categories"), 0, CATEGORY_LABEL_ROW);
-		layout.add(new Label("Category Name:"), 0, CATEGORY_INPUT_ROW);
-		layout.add(categoryNameField, 1, CATEGORY_INPUT_ROW);
-		layout.add(new Label("Unit Requirement:"), 2, CATEGORY_INPUT_ROW);
-		layout.add(categoryUnitField, 3, CATEGORY_INPUT_ROW);
-		layout.add(addCategoryButton, 4, CATEGORY_INPUT_ROW);
-		layout.add(enteredCategories, 0, CATEGORY_LIST_ROW,9,1);
+		layout.add(new Label("Category Abbreviation"), 0, CATEGORY_INPUT_ROW);
+		layout.add(categoryAbbreviation, 1, CATEGORY_INPUT_ROW);
+		layout.add(new Label("Category Name:"), 2, CATEGORY_INPUT_ROW);
+		layout.add(categoryNameField, 3, CATEGORY_INPUT_ROW);
+		layout.add(new Label("Unit Requirement:"), 4, CATEGORY_INPUT_ROW);
+		layout.add(categoryUnitField, 5, CATEGORY_INPUT_ROW);
+		layout.add(addCategoryButton, 6, CATEGORY_INPUT_ROW);
+		layout.add(enteredCategories, 0, CATEGORY_LIST_ROW,MAX_COLUMS,1);
 		setCategoryInputProperties();
 	}
 
@@ -205,10 +236,13 @@ public class InputScene
 	{
 		layout = new GridPane();
 		inputScene = new Scene(layout);
+		missingInfoError = new Alert(AlertType.ERROR);
+		categoryAbbreviation = new TextField();
 		categoryNameField = new TextField();
 		categoryUnitField = new TextField();
 		enteredCategories = new ListView<>();
 		addCategoryButton = new Button("Add category");
+		courseAbbreviation = new TextField();
 		courseNameField = new TextField();
 		courseUnitsField = new TextField();
 		courseCategoryBox = new ComboBox<>();
