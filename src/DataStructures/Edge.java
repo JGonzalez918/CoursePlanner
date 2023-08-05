@@ -1,4 +1,4 @@
-package GraphFiles;
+package DataStructures;
 
 public class Edge
 {

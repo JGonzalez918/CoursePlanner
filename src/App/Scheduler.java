@@ -7,10 +7,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import DataStructures.AdjList;
+import DataStructures.Edge;
 import Exceptions.ContainsCycle;
 import Exceptions.UndeclaredCourse;
-import GraphFiles.AdjList;
-import GraphFiles.Edge;
 
 public class Scheduler
 {
