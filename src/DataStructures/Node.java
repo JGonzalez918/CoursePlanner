@@ -7,7 +7,7 @@ public class Node
 	public final static int NOT_A_WORD = -1;
 	public final static int DIGIT_START = 26;
 	
-	//26 for alphabet 10 for digits
+	//26 for letters 10 for digits
 	private final static int ALPHABET_SIZE = 26 + 10;
 	
 	public Node() 
