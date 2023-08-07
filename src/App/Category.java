@@ -12,5 +12,10 @@ public class Category
 		this.unitRequirement = unitRequirement;
 	}
 	
+	public String toString() 
+	{
+		return categoryID + " " + categoryName + " Needs " + unitRequirement + " to be satisfied"; 
+	}
+	
 	
 }
