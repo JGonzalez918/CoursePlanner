@@ -5,6 +5,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application
 {
+	static InputScene inputScene;
 
 	public static void main(String[] args) 
 	{
@@ -12,6 +13,6 @@ public class Main extends Application
 	}
 	
     public void start(Stage primaryStage) throws Exception{
-    	new InputScene(primaryStage);
+    	inputScene = new InputScene(primaryStage);
     }
 }
