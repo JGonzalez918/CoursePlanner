@@ -44,6 +44,7 @@ public class Trie
 		for(int i = 0; i < word.length(); i++) 
 		{
 			int index = charToIndex(word.charAt(i));
+			if(index == -1) continue;
 			if(currNode.children[index] == null) {
 				currNode.children[index] = new Node();
 			}
@@ -91,9 +92,9 @@ public class Trie
 	
 	public ArrayList<Integer> getNMatchesRec(String prefix, Node root, int[] mistakeNodesLeft,int index, ArrayList<Integer> matchList) 
 	{
-		while(index < prefix.length() && root.children[charToIndex(prefix.charAt(index))] != null) 
+		while(index < prefix.length() && nextNode(root, prefix, index) != null) 
 		{
-			root = root.children[charToIndex(prefix.charAt(index))];
+			root = nextNode(root, prefix, index);
 			index++;
 		}
 		if(index == prefix.length()) 
@@ -126,6 +127,23 @@ public class Trie
 			{
 				fillMatchList(root.children[i], matchList);
 			}
+		}
+	}
+	
+	public Node nextNode(Node currNode, String prefix, int currIndex) 
+	{
+		int trieIndex = charToIndex(prefix.charAt(currIndex));
+		if(trieIndex == -1) 
+		{
+			return currNode;
+		}
+		else if(currNode.children[trieIndex] != null) 
+		{
+			return currNode.children[trieIndex];
+		}
+		else 
+		{
+			return null;
 		}
 	}
 	
