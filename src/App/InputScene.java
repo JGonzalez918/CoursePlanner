@@ -1,11 +1,9 @@
 package App;
 
-import java.awt.event.KeyEvent;
+
 import java.util.ArrayList;
 
 import DataStructures.Trie;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -50,6 +48,7 @@ public class InputScene
 	private TextField courseNameField;
 	
 	private TextField courseUnitsField;
+	
 	
 	private ComboBox<String> courseCategoryBox;
 	
@@ -125,6 +124,7 @@ public class InputScene
 	
 	private void courseCategoryBox() 
 	{
+		
 		courseCategoryBox.getEditor().setOnMouseClicked(event -> {
 			courseCategoryBox.getItems().clear();
 			ArrayList<Integer> matches = categoryIdTree.getNMatches("");
@@ -138,8 +138,7 @@ public class InputScene
 		
 		courseCategoryBox.getEditor().setOnKeyTyped(event -> {
 			courseCategoryBox.getItems().clear();
-			String enteredString = courseCategoryBox.getEditor().getText();
-			
+			String enteredString = courseCategoryBox.getEditor().getText();			
 			ArrayList<Integer> matches = categoryIdTree.getNMatches(enteredString);
 			for(int i = 0; i < matches.size(); i++) 
 			{
@@ -163,7 +162,7 @@ public class InputScene
 			HBox categoryBox = makeHBox(categoryAbbr,categoryName, categoryUnitRequirement);
 			categoryList.add(new Category(categoryAbbr, categoryName, Integer.parseInt(categoryUnitRequirement)));
 			categoryIdTree.addString(categoryAbbr, categoryList.size() - 1);
-			
+			courseCategoryBox.getItems().add(categoryAbbr);
 			enteredCategories.getItems().add(categoryBox);
 			categoryAbbreviation.clear();
 			categoryNameField.clear();
