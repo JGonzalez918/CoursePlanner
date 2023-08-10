@@ -60,6 +60,26 @@ public class Trie
 		return true;
 	}
 	
+	public int find(String str) 
+	{
+		int i = 0;
+		Node curr = root;
+		while(i < str.length() && curr != null)
+		{
+			curr = nextNode(curr, str, i);
+			i++;
+		}
+		
+		if(curr == null) 
+		{
+			return -1;
+		}
+		else 
+		{
+			return curr.vertex;
+		}
+	}
+	
 	public int charToIndex(char c) 
 	{
 		int index = -1;
@@ -137,13 +157,9 @@ public class Trie
 		{
 			return currNode;
 		}
-		else if(currNode.children[trieIndex] != null) 
+		else //the node in the array could be null or an actual node
 		{
 			return currNode.children[trieIndex];
-		}
-		else 
-		{
-			return null;
 		}
 	}
 	
