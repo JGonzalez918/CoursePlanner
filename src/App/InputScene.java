@@ -12,7 +12,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Skin;
 import javafx.scene.control.TextField;
+import javafx.scene.control.skin.ComboBoxListViewSkin;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -44,6 +48,10 @@ public class InputScene
 	private TextField courseNameField;
 	
 	private TextField courseUnitsField;
+	
+	//this is used to resolve a bug in the ComboBox class
+	//which happens whenever a space is entered the input is ereased
+	private ComboBoxListViewSkin<String> skin;
 	
 	private ComboBox<String> courseCategoryBox;
 	
@@ -119,15 +127,13 @@ public class InputScene
 	
 	private void courseCategoryBox() 
 	{
-		courseCategoryBox.getEditor().setOnMouseClicked(event -> {
-			courseCategoryBox.getItems().clear();
-			ArrayList<Integer> matches = categoryIdTree.getNMatches("");
-			for(int i = 0; i < matches.size(); i++) 
+		courseCategoryBox.setSkin(skin);
+
+		skin.getPopupContent().addEventFilter(KeyEvent.ANY,event -> {
+			if(event.getCode() == KeyCode.SPACE) 
 			{
-				courseCategoryBox.getItems().add(categoryList.get(matches.get(i)).toString());
+				event.consume();
 			}
-			courseCategoryBox.show();
-			
 		});
 		
 		courseCategoryBox.getEditor().setOnKeyTyped(event -> {
@@ -136,7 +142,7 @@ public class InputScene
 			ArrayList<Integer> matches = categoryIdTree.getNMatches(enteredString);
 			for(int i = 0; i < matches.size(); i++) 
 			{
-				courseCategoryBox.getItems().add(categoryList.get(matches.get(i)).toString());
+				courseCategoryBox.getItems().add(categoryList.get(matches.get(i)).categoryName);
 			}
 			courseCategoryBox.show();
 		});
@@ -144,6 +150,7 @@ public class InputScene
 
 	private void categoryButtonFunctionality()
 	{
+		
 		addCategoryButton.setOnAction((notUsed) -> {	
 			String categoryName = categoryNameField.getText().strip();
 			String categoryUnitRequirement = categoryUnitField.getText().strip();
@@ -282,6 +289,7 @@ public class InputScene
 		courseNameField = new TextField();
 		courseUnitsField = new TextField();
 		courseCategoryBox = new ComboBox<>();
+		skin = new ComboBoxListViewSkin<>(courseCategoryBox);
 		coursePrereqBox = new ComboBox<>();
 		enteredCourses = new ListView<>();
 		addCourse = new Button("Add Course");
