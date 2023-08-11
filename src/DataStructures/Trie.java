@@ -102,7 +102,7 @@ public class Trie
 		return index;
 	}
 	
-	private static final int MAX_MISTAKE_NODES = 10;
+	private static final int MAX_MISTAKE_NODES = 200;
 	private static final int MAX_MATCHING = 10;
 	public ArrayList<Integer> getNMatches(String prefix)
 	{
