@@ -95,9 +95,9 @@ public class Trie
 		{
 			index = c - 'a';
 		}
-		if(index == -1) 
+		if(index == -1 && Character.isWhitespace(c) == false) 
 		{
-			trie.log(Level.SEVERE, "Unexpected character passed to function");
+			trie.log(Level.SEVERE, "Character not in alphabet passed to trie");
 		}
 		return index;
 	}
@@ -165,7 +165,14 @@ public class Trie
 	
 	public int removeWord(String word) 
 	{
-		throw new RuntimeException("Not Implemented");
+		Node curr = root;
+		for(int i = 0; i < word.length(); i++) 
+		{
+			curr = nextNode(curr, word, i);
+		}
+		int save = curr.vertex;
+		curr.vertex = Node.NOT_A_WORD;
+		return save; 
 	}
 	
 	
