@@ -25,7 +25,7 @@ public class InputScene
 {
 	private Stage primaryStage;
 	
-	private Scene inputScene;
+	public Scene inputScene;
 		
 	private GridPane layout;
 	
@@ -90,33 +90,150 @@ public class InputScene
 	public InputScene(Stage primaryStage) 
 	{
 		this.primaryStage = primaryStage;
-		primaryStage.setResizable(false);
-		
 		initialize();
 		buildScene();
-		primaryStage.setScene(inputScene);
-		primaryStage.show();
+		addFunctionality();
+
 	}
 
-
+	private void initialize()
+	{
+		layout = new GridPane();
+		inputScene = new Scene(layout);
+		missingInfoError = new Alert(AlertType.ERROR);
+		categoryNameField = new TextField();
+		categoryUnitField = new TextField();
+		enteredCategories = new ListView<>();
+		addCategoryButton = new Button("Add category");
+		courseNameField = new TextField();
+		courseUnitsField = new TextField();
+		courseCategoryBox = new ComboBox<>();
+		coursePrereqBox = new ComboBox<>();
+		enteredCourses = new ListView<>();
+		addCourse = new Button("Add Course");
+		categoryIdTree = new Trie();
+		categoryList = new ArrayList<>();
+		layout.setGridLinesVisible(true);
+	}
+	
+	
+	/**
+	 * ======================================================================================
+	 * ===============================SCENE BUILDING FUNCTIONS===============================
+	 * ======================================================================================
+	 * =============The scene building functions create the look for the input scene=========
+	 * =============They add the ndoes and set prompt text etc.==============================
+	 * ======================================================================================
+	 */
 	private void buildScene()
 	{
 		buildCategoryInput();
 		buildCourseInput();
-		categoryButtonFunctionality();
-		addCourseButtonFunctionality();
 		addSubmitButton();
+
+	}
+	
+	private void buildCategoryInput()
+	{
+		layout.add(new Label("Categories"), 0, CATEGORY_LABEL_ROW);
+		layout.add(new Label("Category Name:"), 0, CATEGORY_INPUT_ROW);
+		layout.add(categoryNameField, 1, CATEGORY_INPUT_ROW);
+		layout.add(new Label("Unit Requirement:"), 2, CATEGORY_INPUT_ROW);
+		layout.add(categoryUnitField, 3, CATEGORY_INPUT_ROW);
+		layout.add(addCategoryButton, 4, CATEGORY_INPUT_ROW);
+		layout.add(enteredCategories, 0, CATEGORY_LIST_ROW,MAX_COLUMS,1);
+		setCategoryInputProperties();
+	}
+	
+	private void setCategoryInputProperties()
+	{
+		categoryNameField.setPromptText("Enter Name");
+		categoryUnitField.setPromptText("Enter Units");
+	}
+	
+	private void buildCourseInput()
+	{
+		layout.add(new Label("Courses:"), 0, COURSE_LABEL_ROW);
+		layout.add(new Label("Course Name"), 0, COURSE_INPUT_ROW);
+		layout.add(courseNameField, 1, COURSE_INPUT_ROW);
+		layout.add(new Label("Course Units"), 2, COURSE_INPUT_ROW);
+		layout.add(courseUnitsField, 3, COURSE_INPUT_ROW);
+		layout.add(new Label("Course Category"), 4, COURSE_INPUT_ROW);
+		layout.add(courseCategoryBox, 5, COURSE_INPUT_ROW);
+		layout.add(new Label("Course Prerequisites"), 6, COURSE_INPUT_ROW);
+		layout.add(coursePrereqBox, 7, COURSE_INPUT_ROW);
+		layout.add(addCourse, 8, COURSE_INPUT_ROW);
+		layout.add(enteredCourses,0,COURSE_LIST_ROW,MAX_COLUMS,1);
+		setCourseInputProperties();
 	}
 
+	private void setCourseInputProperties()
+	{
+		courseNameField.setPromptText("Enter Name");
+		courseUnitsField.setPromptText("Enter Units");
+		courseCategoryBox.promptTextProperty().set("Choose Category");
+		coursePrereqBox.promptTextProperty().set("Choose Prerequisites for Course");
+		courseCategoryBox.setEditable(true);
+		coursePrereqBox.setEditable(true);
+	}
+	
 
 	private void addSubmitButton()
 	{
 		submitButton = new Button("Submit");
 		submitButton.setPadding(new Insets(SUBMITBUTTON_VERTICAL_PADDING,SUBMITBUTTON_HORIZANTAL_PADDING,SUBMITBUTTON_VERTICAL_PADDING,SUBMITBUTTON_HORIZANTAL_PADDING));
-		
 		layout.add(submitButton, SUBMITBUTTON_COL, SUBMITBUTTON_ROW);
 	}
+	
+	/**
+	 * ===================================================================================
+	 * ===================================================================================
+	 * =============================END SCENE BUILDING FUNCTIONS==========================
+	 * ===================================================================================
+	 * ===================================================================================
+	 */
+	
+	
+	
+	
+	/**
+	 * ===================================================================================
+	 * ============================ADD FUNCTIONALITY FUNCTIONS============================
+	 * ===================================================================================
+	 * The functions below add functionallity to buttons and text boxes. The logic in these 
+	 * functions is distinctly different from the scene building ones so I seperated them
+	 * ===================================================================================
+	 * ===================================================================================
+	 */
+	
+	
+	private void addFunctionality() 
+	{
+		addCategoryButtonFunctionality();
+		addCourseButtonFunctionality();
+		addcourseCategoryComboBoxFunctionality();
 
+	}
+	private void addCategoryButtonFunctionality()
+	{
+		addCategoryButton.setOnMouseClicked((notUsed) -> {	
+			String categoryName = categoryNameField.getText();
+			String categoryUnitRequirement = categoryUnitField.getText();
+
+			if(categoryContainsError(categoryName, categoryUnitRequirement)) 
+			{
+				return;
+			}
+			
+			HBox categoryBox = makeCategoryHBox(categoryName, categoryUnitRequirement);
+			categoryList.add(new Category(categoryName, Integer.parseInt(categoryUnitRequirement)));
+			categoryIdTree.addString(categoryName, categoryList.size() - 1);
+			enteredCategories.getItems().add(categoryBox);
+			categoryNameField.clear();
+			categoryUnitField.clear();
+		});
+	}
+	
 	/**
 	 * Objectives for add course button functionality
 	 * check for errors in input information
@@ -138,7 +255,7 @@ public class InputScene
 		});
 	}
 	
-	private void courseCategoryBox() 
+	private void addcourseCategoryComboBoxFunctionality() 
 	{
 //		Uncomment this sections when project is done. For some reason 
 //		a null pointer exception is thrown whenever something is typed in the combobox
@@ -160,26 +277,6 @@ public class InputScene
 				courseCategoryBox.getItems().add(categoryList.get(matches.get(i)).categoryName);
 			}
 			courseCategoryBox.show();
-		});
-	}
-
-	private void categoryButtonFunctionality()
-	{
-		addCategoryButton.setOnMouseClicked((notUsed) -> {	
-			String categoryName = categoryNameField.getText();
-			String categoryUnitRequirement = categoryUnitField.getText();
-
-			if(categoryContainsError(categoryName, categoryUnitRequirement)) 
-			{
-				return;
-			}
-			
-			HBox categoryBox = makeCategoryHBox(categoryName, categoryUnitRequirement);
-			categoryList.add(new Category(categoryName, Integer.parseInt(categoryUnitRequirement)));
-			categoryIdTree.addString(categoryName, categoryList.size() - 1);
-			enteredCategories.getItems().add(categoryBox);
-			categoryNameField.clear();
-			categoryUnitField.clear();
 		});
 	}
 
@@ -221,7 +318,7 @@ public class InputScene
 		{
 			errorMessage += "Category field must only consists of letters and digits\n";
 		}
-		if(numberCantBeParsed(categoryUnitRequirement)) 
+		if(HelperFunctions.numberCantBeParsed(categoryUnitRequirement)) 
 		{
 			errorMessage += "Unit requirement field cannot be read as an integer";
 		}
@@ -235,85 +332,26 @@ public class InputScene
 		return false;
 	}
 	
-	private boolean numberCantBeParsed(String categoryUnitRequirement) 
-	{
-		try 
-		{
-			Integer.parseInt(categoryUnitRequirement);
-		}catch(NumberFormatException e) 
-		{
-			return true;
-		}
-		return false;
-	}
+	/**
+	 * ===================================================================================
+	 * ===================================================================================
+	 * ============================END OF ADD FUNCTIONALLITY==============================
+	 * ===================================================================================
+	 * ===================================================================================
+	 */
 
 
-	private void buildCourseInput()
-	{
-		layout.add(new Label("Courses:"), 0, COURSE_LABEL_ROW);
-		layout.add(new Label("Course Name"), 0, COURSE_INPUT_ROW);
-		layout.add(courseNameField, 1, COURSE_INPUT_ROW);
-		layout.add(new Label("Course Units"), 2, COURSE_INPUT_ROW);
-		layout.add(courseUnitsField, 3, COURSE_INPUT_ROW);
-		layout.add(new Label("Course Category"), 4, COURSE_INPUT_ROW);
-		layout.add(courseCategoryBox, 5, COURSE_INPUT_ROW);
-		layout.add(new Label("Course Prerequisites"), 6, COURSE_INPUT_ROW);
-		layout.add(coursePrereqBox, 7, COURSE_INPUT_ROW);
-		layout.add(addCourse, 8, COURSE_INPUT_ROW);
-		layout.add(enteredCourses,0,COURSE_LIST_ROW,MAX_COLUMS,1);
-		setCourseInputProperties();
-		courseCategoryBox();
-	}
 
 
-	private void setCourseInputProperties()
-	{
-		courseNameField.setPromptText("Enter Name");
-		courseUnitsField.setPromptText("Enter Units");
-		courseCategoryBox.promptTextProperty().set("Choose Category");
-		coursePrereqBox.promptTextProperty().set("Choose Prerequisites for Course");
-		courseCategoryBox.setEditable(true);
-		coursePrereqBox.setEditable(true);
-	}
 
 
-	private void setCategoryInputProperties()
-	{
-		categoryNameField.setPromptText("Enter Name");
-		categoryUnitField.setPromptText("Enter Units");
-	}
 
 
-	private void buildCategoryInput()
-	{
-		layout.add(new Label("Categories"), 0, CATEGORY_LABEL_ROW);
-		layout.add(new Label("Category Name:"), 0, CATEGORY_INPUT_ROW);
-		layout.add(categoryNameField, 1, CATEGORY_INPUT_ROW);
-		layout.add(new Label("Unit Requirement:"), 2, CATEGORY_INPUT_ROW);
-		layout.add(categoryUnitField, 3, CATEGORY_INPUT_ROW);
-		layout.add(addCategoryButton, 4, CATEGORY_INPUT_ROW);
-		layout.add(enteredCategories, 0, CATEGORY_LIST_ROW,MAX_COLUMS,1);
-		setCategoryInputProperties();
-	}
 
 
-	private void initialize()
-	{
-		layout = new GridPane();
-		inputScene = new Scene(layout);
-		missingInfoError = new Alert(AlertType.ERROR);
-		categoryNameField = new TextField();
-		categoryUnitField = new TextField();
-		enteredCategories = new ListView<>();
-		addCategoryButton = new Button("Add category");
-		courseNameField = new TextField();
-		courseUnitsField = new TextField();
-		courseCategoryBox = new ComboBox<>();
-		coursePrereqBox = new ComboBox<>();
-		enteredCourses = new ListView<>();
-		addCourse = new Button("Add Course");
-		categoryIdTree = new Trie();
-		categoryList = new ArrayList<>();
-		layout.setGridLinesVisible(true);
-	}
+
+
+
+
+
 }
