@@ -119,6 +119,17 @@ public class InputScene
 
 	/**
 	 * Objectives for add course button functionality
+	 * check for errors in input information
+	 * 	course name only letters and digits
+	 * 	course units must be parsable
+	 * 	category name if present must be valid (if filled)
+	 * 	course prerequisites must be valid if filled 
+	 * verify that if category list is not empty then all courses must have a category
+	 * 	
+	 * if empty then category list must be empty 
+	 * if course prerqlist is empty leave it 
+	 * if not verify all valid 
+	 * 
 	 */
 	private void addCourseButtonFunctionality()
 	{
@@ -158,12 +169,12 @@ public class InputScene
 			String categoryName = categoryNameField.getText();
 			String categoryUnitRequirement = categoryUnitField.getText();
 
-			if(containsError(categoryName, categoryUnitRequirement)) 
+			if(categoryContainsError(categoryName, categoryUnitRequirement)) 
 			{
 				return;
 			}
 			
-			HBox categoryBox = makeHBox(categoryName, categoryUnitRequirement);
+			HBox categoryBox = makeCategoryHBox(categoryName, categoryUnitRequirement);
 			categoryList.add(new Category(categoryName, Integer.parseInt(categoryUnitRequirement)));
 			categoryIdTree.addString(categoryName, categoryList.size() - 1);
 			enteredCategories.getItems().add(categoryBox);
@@ -173,7 +184,7 @@ public class InputScene
 	}
 
 
-	private HBox makeHBox(String categoryName, String categoryUnitRequirement)
+	private HBox makeCategoryHBox(String categoryName, String categoryUnitRequirement)
 	{
 		HBox categoryBox = new HBox();
 		categoryBox.setSpacing(SPACING);
@@ -192,14 +203,14 @@ public class InputScene
 			categoryIdTree.removeWord(categoryName);
 		});
 		
-		categoryBox.getChildren().addAll(new Label(categoryName), new Label(categoryUnitRequirement + " Units"),
+		categoryBox.getChildren().addAll(new Label(categoryName), new Label(categoryUnitRequirement + " Units required to be completed"),
 				editButton, deleteButton);
 		
 		return categoryBox;
 	}
 
 
-	private boolean containsError(String categoryName, String categoryUnitRequirement)
+	private boolean categoryContainsError(String categoryName, String categoryUnitRequirement)
 	{
 		String errorMessage = "";
 		if(categoryName.isBlank()) 
