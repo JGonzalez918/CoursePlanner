@@ -300,7 +300,7 @@ public class InputScene
 			categoryIdTree.removeWord(categoryName);
 		});
 		
-		categoryBox.getChildren().addAll(new Label(categoryName), new Label(categoryUnitRequirement + " Units required to be completed"),
+		categoryBox.getChildren().addAll(new Label(categoryName), new Label(categoryUnitRequirement + " Unit requirement"),
 				editButton, deleteButton);
 		
 		return categoryBox;
