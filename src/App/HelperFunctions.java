@@ -19,4 +19,17 @@ public class HelperFunctions
 		}
 		return s.toString();
 	}
+	
+	public static boolean containsNonSpaceCharDigit(String str) 
+	{
+		for(int i = 0; i < str.length(); i++) 
+		{
+			if(Character.isUpperCase(str.charAt(i)) == false && Character.isLowerCase(str.charAt(i)) == false
+					&& Character.isDigit(str.charAt(i)) == false && Character.isWhitespace(str.charAt(i)) == false) 
+			{
+				return true;
+			}
+		}
+		return true;
+	}
 }
