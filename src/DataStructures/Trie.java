@@ -35,8 +35,16 @@ public class Trie
 		trie.setUseParentHandlers(false);
 		trie.log(Level.INFO,"Logger made");
 	}
-	
-	//Assume that word only contains letters and digits
+	/**
+	 * ======================================================================================
+	 * ======================================================================================
+	 * ==========================FUNCTIONS FOR ADDING,REMOVING,FINDING=======================
+	 * ======================================================================================
+	 * ======================================================================================
+	 * For all functions it is assumes the string passed consists of only digits and letters
+	 * ======================================================================================
+	 * ======================================================================================
+	 */
 	public boolean addString(String word, int vertex) 
 	{
 		trie.log(Level.INFO, "Adding " + word  + " to trie. Note that it is assumed that word consists of only letters and digits.");
@@ -74,32 +82,22 @@ public class Trie
 		{
 			return -1;
 		}
-		else 
+		else
 		{
 			return curr.vertex;
 		}
 	}
 	
-	public int charToIndex(char c) 
+	public int removeWord(String word) 
 	{
-		int index = -1;
-		if(Character.isDigit(c)) 
+		Node curr = root;
+		for(int i = 0; i < word.length(); i++) 
 		{
-			index = c - '0' + Node.DIGIT_START;
+			curr = nextNode(curr, word, i);
 		}
-		else if(Character.isUpperCase(c)) 
-		{
-			index = c - 'A';
-		}
-		else if(Character.isLowerCase(c)) 
-		{
-			index = c - 'a';
-		}
-		if(index == -1 && Character.isWhitespace(c) == false) 
-		{
-			trie.log(Level.SEVERE, "Character not in alphabet passed to trie");
-		}
-		return index;
+		int save = curr.vertex;
+		curr.vertex = Node.NOT_A_WORD;
+		return save; 
 	}
 	
 	private static final int MAX_MISTAKE_NODES = 200;
@@ -110,7 +108,7 @@ public class Trie
 		return getNMatchesRec(prefix,root,new int[] {MAX_MISTAKE_NODES},0, new ArrayList<>());
 	}
 	
-	public ArrayList<Integer> getNMatchesRec(String prefix, Node root, int[] mistakeNodesLeft,int index, ArrayList<Integer> matchList) 
+	private ArrayList<Integer> getNMatchesRec(String prefix, Node root, int[] mistakeNodesLeft,int index, ArrayList<Integer> matchList) 
 	{
 		while(index < prefix.length() && nextNode(root, prefix, index) != null) 
 		{
@@ -150,7 +148,45 @@ public class Trie
 		}
 	}
 	
-	public Node nextNode(Node currNode, String prefix, int currIndex) 
+	/*
+	 * ======================================================================================
+	 * ======================================================================================
+	 * ==============================END OF ADD,REMOVE,FIND FUNCTIONS========================
+	 * ======================================================================================
+	 * ======================================================================================
+	 */
+	
+	/*
+	 * ======================================================================================
+	 * ======================================================================================
+	 * ==============================HELPER FUNCTIONS========================================
+	 * ======================================================================================
+	 * ======================================================================================
+	 */
+	
+	private int charToIndex(char c) 
+	{
+		int index = -1;
+		if(Character.isDigit(c)) 
+		{
+			index = c - '0' + Node.DIGIT_START;
+		}
+		else if(Character.isUpperCase(c)) 
+		{
+			index = c - 'A';
+		}
+		else if(Character.isLowerCase(c)) 
+		{
+			index = c - 'a';
+		}
+		if(index == -1 && Character.isWhitespace(c) == false) 
+		{
+			trie.log(Level.SEVERE, "Character not in alphabet passed to trie");
+		}
+		return index;
+	}
+	
+	private Node nextNode(Node currNode, String prefix, int currIndex) 
 	{
 		int trieIndex = charToIndex(prefix.charAt(currIndex));
 		if(trieIndex == -1) 
@@ -162,18 +198,12 @@ public class Trie
 			return currNode.children[trieIndex];
 		}
 	}
-	
-	public int removeWord(String word) 
-	{
-		Node curr = root;
-		for(int i = 0; i < word.length(); i++) 
-		{
-			curr = nextNode(curr, word, i);
-		}
-		int save = curr.vertex;
-		curr.vertex = Node.NOT_A_WORD;
-		return save; 
-	}
+	/**
+	 * 
+	 * ======================================================================================
+	 * ===========================END OF HELPER FUNCTIONS====================================
+	 * ======================================================================================
+	 */
 	
 	
 }
