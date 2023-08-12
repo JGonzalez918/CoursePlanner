@@ -13,6 +13,9 @@ public class Main extends Application
 	}
 	
     public void start(Stage primaryStage) throws Exception{
+		primaryStage.setResizable(false);
     	inputScene = new InputScene(primaryStage);
+    	primaryStage.setScene(inputScene.inputScene);
+		primaryStage.show();
     }
 }
