@@ -121,20 +121,20 @@ public class InputScene
 	private void addCourseButtonFunctionality()
 	{
 		addCourse.setOnAction((click) -> {
-
+			
 		});
 	}
 	
 	private void courseCategoryBox() 
 	{
-		courseCategoryBox.setSkin(skin);
-
-		skin.getPopupContent().addEventFilter(KeyEvent.ANY,event -> {
-			if(event.getCode() == KeyCode.SPACE) 
-			{
-				event.consume();
-			}
-		});
+//		skin = new ComboBoxListViewSkin<>(courseCategoryBox);
+//		skin.getPopupContent().addEventFilter(KeyEvent.ANY, event -> {
+//			if(event.getCode() == KeyCode.SPACE) {
+//				event.consume();
+//			}
+//		});
+//		courseCategoryBox.setSkin(skin);
+//		
 		
 		courseCategoryBox.getEditor().setOnKeyTyped(event -> {
 			courseCategoryBox.getItems().clear();
@@ -289,7 +289,6 @@ public class InputScene
 		courseNameField = new TextField();
 		courseUnitsField = new TextField();
 		courseCategoryBox = new ComboBox<>();
-		skin = new ComboBoxListViewSkin<>(courseCategoryBox);
 		coursePrereqBox = new ComboBox<>();
 		enteredCourses = new ListView<>();
 		addCourse = new Button("Add Course");
