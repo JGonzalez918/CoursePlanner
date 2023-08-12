@@ -117,7 +117,9 @@ public class InputScene
 		layout.add(submitButton, SUBMITBUTTON_COL, SUBMITBUTTON_ROW);
 	}
 
-
+	/**
+	 * Objectives for add course button functionality
+	 */
 	private void addCourseButtonFunctionality()
 	{
 		addCourse.setOnAction((click) -> {
@@ -127,6 +129,8 @@ public class InputScene
 	
 	private void courseCategoryBox() 
 	{
+//		Uncomment this sections when project is done. For some reason 
+//		a null pointer exception is thrown whenever something is typed in the combobox
 //		skin = new ComboBoxListViewSkin<>(courseCategoryBox);
 //		skin.getPopupContent().addEventFilter(KeyEvent.ANY, event -> {
 //			if(event.getCode() == KeyCode.SPACE) {
@@ -150,15 +154,15 @@ public class InputScene
 
 	private void categoryButtonFunctionality()
 	{
-		
-		addCategoryButton.setOnAction((notUsed) -> {	
-			String categoryName = categoryNameField.getText().strip();
-			String categoryUnitRequirement = categoryUnitField.getText().strip();
+		addCategoryButton.setOnMouseClicked((notUsed) -> {	
+			String categoryName = categoryNameField.getText();
+			String categoryUnitRequirement = categoryUnitField.getText();
 
 			if(containsError(categoryName, categoryUnitRequirement)) 
 			{
 				return;
 			}
+			
 			HBox categoryBox = makeHBox(categoryName, categoryUnitRequirement);
 			categoryList.add(new Category(categoryName, Integer.parseInt(categoryUnitRequirement)));
 			categoryIdTree.addString(categoryName, categoryList.size() - 1);
@@ -185,6 +189,7 @@ public class InputScene
 		Button deleteButton = new Button("Delete");
 		deleteButton.setOnAction((a) -> {
 			enteredCategories.getItems().remove(categoryBox);
+			categoryIdTree.removeWord(categoryName);
 		});
 		
 		categoryBox.getChildren().addAll(new Label(categoryName), new Label(categoryUnitRequirement + " Units"),
@@ -197,9 +202,13 @@ public class InputScene
 	private boolean containsError(String categoryName, String categoryUnitRequirement)
 	{
 		String errorMessage = "";
-		if(categoryName.isEmpty()) 
+		if(categoryName.isBlank()) 
 		{
 			errorMessage += "Category field cannot be empty\n";
+		}
+		else if(HelperFunctions.containsNonSpaceCharDigit(categoryName)) 
+		{
+			errorMessage += "Category field must only consists of letters and digits\n";
 		}
 		if(numberCantBeParsed(categoryUnitRequirement)) 
 		{
