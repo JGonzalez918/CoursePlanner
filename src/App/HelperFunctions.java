@@ -30,6 +30,6 @@ public class HelperFunctions
 				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 }
