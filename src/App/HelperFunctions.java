@@ -32,4 +32,16 @@ public class HelperFunctions
 		}
 		return false;
 	}
+	
+	public static boolean numberCantBeParsed(String categoryUnitRequirement) 
+	{
+		try 
+		{
+			Integer.parseInt(categoryUnitRequirement);
+		}catch(NumberFormatException e) 
+		{
+			return true;
+		}
+		return false;
+	}
 }
